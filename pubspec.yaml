@@ -1,0 +1,58 @@
+name: zlib
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  ffi: ^2.0.1
+  path: ^1.8.0
+
+dev_dependencies:
+  ffigen:
+    path: '../native/pkgs/ffigen'
+  lints: ^2.0.1
+
+ffigen:
+  name: zlib
+  ffi-native:
+    assetId: "c { syslib=\"z\" }\nextern import\n  c file \"zconf.h\"\nextern import\n  c file \"zlib.h\""
+  description: Bindings to `zlib.h`.
+  output: 'zlib/generated.kk'
+  headers:
+    entry-points:
+      - '/usr/include/zlib.h'
+      - '/usr/include/zconf.h'
+    include-directives:
+      - '/usr/include/zlib.h'
+      - '/usr/include/zconf.h'
+  preamble: |
+    // Copyright (c) 2020, the Koka-Community authors. All rights reserved. 
+    // Use of this source code is governed by a
+    // MIT-style license that can be found in the LICENSE file.
+  functions:
+    exclude:
+      - (_)+.*
+      - gzvprintf
+  structs:
+    exclude:
+      - (_)+.*
+      - va_list.*
+    member-rename:
+      '.*':
+        '_(.*)': '$1'
+    dependency-only: opaque
+  enums:
+    exclude:
+      - (_)+.*
+  unions:
+    exclude:
+      - (_)+.*
+  globals:
+    exclude:
+      - (_)+.*
+  macros:
+    exclude:
+      - (_)+.*
+  typedefs:
+    exclude:
+      - (_)+.*
