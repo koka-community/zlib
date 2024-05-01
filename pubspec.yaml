@@ -15,16 +15,16 @@ dev_dependencies:
 ffigen:
   name: zlib
   ffi-native:
-    assetId: "c { syslib=\"z\" }\nextern import\n  c file \"zconf.h\"\nextern import\n  c file \"zlib.h\""
+    assetId: "c { syslib=\"z\" }\nextern import\n  c header-file \"zconf.h\"\nextern import\n  c header-file \"zlib.h\""
   description: Bindings to `zlib.h`.
   output: 'zlib/generated.kk'
   headers:
     entry-points:
-      - '/usr/include/zlib.h'
-      - '/usr/include/zconf.h'
+      - 'zlib/zlib.h'
+      - 'zlib/conf.h'
     include-directives:
-      - '/usr/include/zlib.h'
-      - '/usr/include/zconf.h'
+      - 'zlib/zlib.h'
+      - 'zlib/zconf.h'
   preamble: |
     // Copyright (c) 2020, the Koka-Community authors. All rights reserved. 
     // Use of this source code is governed by a

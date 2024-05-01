@@ -11,619 +11,511 @@ import std/num/int32
 import std/num/int64
 import std/num/float64
 
+import std/cextern
+
 extern import
   c { syslib="z" }
 extern import
-  c file "zconf.h"
+  c header-file "zconf.h"
 extern import
-  c file "zlib.h"
+  c header-file "zlib.h"
 
-pub extern external/zlibVersion(): intptr_t
-  c inline "zlibVersion()"
+pub extern external/zlibversion(): intptr_t
+  c inline "(intptr_t)zlibVersion()"
 
-pub fun wrapper/zlibVersion(): owned-c<int8>
-  external/zlibVersion().c-own
+pub fun wrapper/zlibversion(): c-pointer<int8>
+  C-pointer(external/zlibversion())
 
 pub extern external/deflate(^strm: intptr_t, ^flush: int32): int32
-  c inline "deflate((z_streamp)#1, (int)#2)"
+  c inline "(int)deflate((struct z_stream_s*)#1, (int)#2)"
 
-pub fun wrapper/deflate(^strm: koka-z_streamp, ^flush: int): int
-  with koka-ptr <- strm.with-ptr
-  external/deflate(koka-ptr, flush.int32).int
+pub fun wrapper/deflate(^strm: c-pointer<z-stream-s-c>, ^flush: int): int
+  external/deflate(strm.ptr, flush.int32).int
 
-pub extern external/deflateEnd(^strm: intptr_t): int32
-  c inline "deflateEnd((z_streamp)#1)"
+pub extern external/deflateend(^strm: intptr_t): int32
+  c inline "(int)deflateEnd((struct z_stream_s*)#1)"
 
-pub fun wrapper/deflateEnd(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/deflateEnd(koka-ptr).int
+pub fun wrapper/deflateend(^strm: c-pointer<z-stream-s-c>): int
+  external/deflateend(strm.ptr).int
 
 pub extern external/inflate(^strm: intptr_t, ^flush: int32): int32
-  c inline "inflate((z_streamp)#1, (int)#2)"
+  c inline "(int)inflate((struct z_stream_s*)#1, (int)#2)"
 
-pub fun wrapper/inflate(^strm: koka-z_streamp, ^flush: int): int
-  with koka-ptr <- strm.with-ptr
-  external/inflate(koka-ptr, flush.int32).int
+pub fun wrapper/inflate(^strm: c-pointer<z-stream-s-c>, ^flush: int): int
+  external/inflate(strm.ptr, flush.int32).int
 
-pub extern external/inflateEnd(^strm: intptr_t): int32
-  c inline "inflateEnd((z_streamp)#1)"
+pub extern external/inflateend(^strm: intptr_t): int32
+  c inline "(int)inflateEnd((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateEnd(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateEnd(koka-ptr).int
+pub fun wrapper/inflateend(^strm: c-pointer<z-stream-s-c>): int
+  external/inflateend(strm.ptr).int
 
-pub extern external/deflateSetDictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictLength: int32): int32
-  c inline "deflateSetDictionary((z_streamp)#1, (Bytef*)#2, (uInt)#3)"
+pub extern external/deflatesetdictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictlength: int32): int32
+  c inline "(int)deflateSetDictionary((struct z_stream_s*)#1, (unsigned char*)#2, (unsigned int)#3)"
 
-pub fun wrapper/deflateSetDictionary(^strm: koka-z_streamp, ^dictionary: owned-c<int8>, ^dictLength: koka-uInt): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- dictionary.with-ptr
-  external/deflateSetDictionary(koka-ptr, koka-ptr1, dictLength.int32).int
+pub fun wrapper/deflatesetdictionary(^strm: c-pointer<z-stream-s-c>, ^dictionary: c-pointer<int8>, ^dictlength: koka-uint): int
+  external/deflatesetdictionary(strm.ptr, dictionary.ptr, dictlength.int32).int
 
-pub extern external/deflateGetDictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictLength: intptr_t): int32
-  c inline "deflateGetDictionary((z_streamp)#1, (Bytef*)#2, (uInt*)#3)"
+pub extern external/deflategetdictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictlength: intptr_t): int32
+  c inline "(int)deflateGetDictionary((struct z_stream_s*)#1, (unsigned char*)#2, (unsigned int*)#3)"
 
-pub fun wrapper/deflateGetDictionary(^strm: koka-z_streamp, ^dictionary: owned-c<int8>, ^dictLength: owned-c<int32>): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- dictionary.with-ptr
-  with koka-ptr2 <- dictLength.with-ptr
-  external/deflateGetDictionary(koka-ptr, koka-ptr1, koka-ptr2).int
+pub fun wrapper/deflategetdictionary(^strm: c-pointer<z-stream-s-c>, ^dictionary: c-pointer<int8>, ^dictlength: c-pointer<int32>): int
+  external/deflategetdictionary(strm.ptr, dictionary.ptr, dictlength.ptr).int
 
-pub extern external/deflateCopy(^dest: intptr_t, ^source: intptr_t): int32
-  c inline "deflateCopy((z_streamp)#1, (z_streamp)#2)"
+pub extern external/deflatecopy(^dest: intptr_t, ^source: intptr_t): int32
+  c inline "(int)deflateCopy((struct z_stream_s*)#1, (struct z_stream_s*)#2)"
 
-pub fun wrapper/deflateCopy(^dest: koka-z_streamp, ^source: koka-z_streamp): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- source.with-ptr
-  external/deflateCopy(koka-ptr, koka-ptr1).int
+pub fun wrapper/deflatecopy(^dest: c-pointer<z-stream-s-c>, ^source: c-pointer<z-stream-s-c>): int
+  external/deflatecopy(dest.ptr, source.ptr).int
 
-pub extern external/deflateReset(^strm: intptr_t): int32
-  c inline "deflateReset((z_streamp)#1)"
+pub extern external/deflatereset(^strm: intptr_t): int32
+  c inline "(int)deflateReset((struct z_stream_s*)#1)"
 
-pub fun wrapper/deflateReset(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/deflateReset(koka-ptr).int
+pub fun wrapper/deflatereset(^strm: c-pointer<z-stream-s-c>): int
+  external/deflatereset(strm.ptr).int
 
-pub extern external/deflateParams(^strm: intptr_t, ^level: int32, ^strategy: int32): int32
-  c inline "deflateParams((z_streamp)#1, (int)#2, (int)#3)"
+pub extern external/deflateparams(^strm: intptr_t, ^level: int32, ^strategy: int32): int32
+  c inline "(int)deflateParams((struct z_stream_s*)#1, (int)#2, (int)#3)"
 
-pub fun wrapper/deflateParams(^strm: koka-z_streamp, ^level: int, ^strategy: int): int
-  with koka-ptr <- strm.with-ptr
-  external/deflateParams(koka-ptr, level.int32, strategy.int32).int
+pub fun wrapper/deflateparams(^strm: c-pointer<z-stream-s-c>, ^level: int, ^strategy: int): int
+  external/deflateparams(strm.ptr, level.int32, strategy.int32).int
 
-pub extern external/deflateTune(^strm: intptr_t, ^good_length: int32, ^max_lazy: int32, ^nice_length: int32, ^max_chain: int32): int32
-  c inline "deflateTune((z_streamp)#1, (int)#2, (int)#3, (int)#4, (int)#5)"
+pub extern external/deflatetune(^strm: intptr_t, ^good-length: int32, ^max-lazy: int32, ^nice-length: int32, ^max-chain: int32): int32
+  c inline "(int)deflateTune((struct z_stream_s*)#1, (int)#2, (int)#3, (int)#4, (int)#5)"
 
-pub fun wrapper/deflateTune(^strm: koka-z_streamp, ^good_length: int, ^max_lazy: int, ^nice_length: int, ^max_chain: int): int
-  with koka-ptr <- strm.with-ptr
-  external/deflateTune(koka-ptr, good_length.int32, max_lazy.int32, nice_length.int32, max_chain.int32).int
+pub fun wrapper/deflatetune(^strm: c-pointer<z-stream-s-c>, ^good-length: int, ^max-lazy: int, ^nice-length: int, ^max-chain: int): int
+  external/deflatetune(strm.ptr, good-length.int32, max-lazy.int32, nice-length.int32, max-chain.int32).int
 
-pub extern external/deflateBound(^strm: intptr_t, ^sourceLen: int64): int64
-  c inline "deflateBound((z_streamp)#1, (uLong)#2)"
+pub extern external/deflatebound(^strm: intptr_t, ^sourcelen: int64): int64
+  c inline "(unsigned long)deflateBound((struct z_stream_s*)#1, (unsigned long)#2)"
 
-pub fun wrapper/deflateBound(^strm: koka-z_streamp, ^sourceLen: koka-uLong): koka-uLong
-  with koka-ptr <- strm.with-ptr
-  external/deflateBound(koka-ptr, sourceLen.int64).int
+pub fun wrapper/deflatebound(^strm: c-pointer<z-stream-s-c>, ^sourcelen: koka-ulong): koka-ulong
+  external/deflatebound(strm.ptr, sourcelen.int64).int
 
-pub extern external/deflatePending(^strm: intptr_t, ^pending: intptr_t, ^bits: intptr_t): int32
-  c inline "deflatePending((z_streamp)#1, (unsigned int*)#2, (int*)#3)"
+pub extern external/deflatepending(^strm: intptr_t, ^pending: intptr_t, ^bits: intptr_t): int32
+  c inline "(int)deflatePending((struct z_stream_s*)#1, (unsigned int*)#2, (int*)#3)"
 
-pub fun wrapper/deflatePending(^strm: koka-z_streamp, ^pending: owned-c<int32>, ^bits: owned-c<int32>): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- pending.with-ptr
-  with koka-ptr2 <- bits.with-ptr
-  external/deflatePending(koka-ptr, koka-ptr1, koka-ptr2).int
+pub fun wrapper/deflatepending(^strm: c-pointer<z-stream-s-c>, ^pending: c-pointer<int32>, ^bits: c-pointer<int32>): int
+  external/deflatepending(strm.ptr, pending.ptr, bits.ptr).int
 
-pub extern external/deflatePrime(^strm: intptr_t, ^bits: int32, ^value: int32): int32
-  c inline "deflatePrime((z_streamp)#1, (int)#2, (int)#3)"
+pub extern external/deflateprime(^strm: intptr_t, ^bits: int32, ^value: int32): int32
+  c inline "(int)deflatePrime((struct z_stream_s*)#1, (int)#2, (int)#3)"
 
-pub fun wrapper/deflatePrime(^strm: koka-z_streamp, ^bits: int, ^value: int): int
-  with koka-ptr <- strm.with-ptr
-  external/deflatePrime(koka-ptr, bits.int32, value.int32).int
+pub fun wrapper/deflateprime(^strm: c-pointer<z-stream-s-c>, ^bits: int, ^value: int): int
+  external/deflateprime(strm.ptr, bits.int32, value.int32).int
 
-pub extern external/deflateSetHeader(^strm: intptr_t, ^head: intptr_t): int32
-  c inline "deflateSetHeader((z_streamp)#1, (gz_headerp)#2)"
+pub extern external/deflatesetheader(^strm: intptr_t, ^head: intptr_t): int32
+  c inline "(int)deflateSetHeader((struct z_stream_s*)#1, (struct gz_header_s*)#2)"
 
-pub fun wrapper/deflateSetHeader(^strm: koka-z_streamp, ^head: koka-gz_headerp): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- head.with-ptr
-  external/deflateSetHeader(koka-ptr, koka-ptr1).int
+pub fun wrapper/deflatesetheader(^strm: c-pointer<z-stream-s-c>, ^head: c-pointer<gz-header-s-c>): int
+  external/deflatesetheader(strm.ptr, head.ptr).int
 
-pub extern external/inflateSetDictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictLength: int32): int32
-  c inline "inflateSetDictionary((z_streamp)#1, (Bytef*)#2, (uInt)#3)"
+pub extern external/inflatesetdictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictlength: int32): int32
+  c inline "(int)inflateSetDictionary((struct z_stream_s*)#1, (unsigned char*)#2, (unsigned int)#3)"
 
-pub fun wrapper/inflateSetDictionary(^strm: koka-z_streamp, ^dictionary: owned-c<int8>, ^dictLength: koka-uInt): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- dictionary.with-ptr
-  external/inflateSetDictionary(koka-ptr, koka-ptr1, dictLength.int32).int
+pub fun wrapper/inflatesetdictionary(^strm: c-pointer<z-stream-s-c>, ^dictionary: c-pointer<int8>, ^dictlength: koka-uint): int
+  external/inflatesetdictionary(strm.ptr, dictionary.ptr, dictlength.int32).int
 
-pub extern external/inflateGetDictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictLength: intptr_t): int32
-  c inline "inflateGetDictionary((z_streamp)#1, (Bytef*)#2, (uInt*)#3)"
+pub extern external/inflategetdictionary(^strm: intptr_t, ^dictionary: intptr_t, ^dictlength: intptr_t): int32
+  c inline "(int)inflateGetDictionary((struct z_stream_s*)#1, (unsigned char*)#2, (unsigned int*)#3)"
 
-pub fun wrapper/inflateGetDictionary(^strm: koka-z_streamp, ^dictionary: owned-c<int8>, ^dictLength: owned-c<int32>): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- dictionary.with-ptr
-  with koka-ptr2 <- dictLength.with-ptr
-  external/inflateGetDictionary(koka-ptr, koka-ptr1, koka-ptr2).int
+pub fun wrapper/inflategetdictionary(^strm: c-pointer<z-stream-s-c>, ^dictionary: c-pointer<int8>, ^dictlength: c-pointer<int32>): int
+  external/inflategetdictionary(strm.ptr, dictionary.ptr, dictlength.ptr).int
 
-pub extern external/inflateSync(^strm: intptr_t): int32
-  c inline "inflateSync((z_streamp)#1)"
+pub extern external/inflatesync(^strm: intptr_t): int32
+  c inline "(int)inflateSync((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateSync(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateSync(koka-ptr).int
+pub fun wrapper/inflatesync(^strm: c-pointer<z-stream-s-c>): int
+  external/inflatesync(strm.ptr).int
 
-pub extern external/inflateCopy(^dest: intptr_t, ^source: intptr_t): int32
-  c inline "inflateCopy((z_streamp)#1, (z_streamp)#2)"
+pub extern external/inflatecopy(^dest: intptr_t, ^source: intptr_t): int32
+  c inline "(int)inflateCopy((struct z_stream_s*)#1, (struct z_stream_s*)#2)"
 
-pub fun wrapper/inflateCopy(^dest: koka-z_streamp, ^source: koka-z_streamp): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- source.with-ptr
-  external/inflateCopy(koka-ptr, koka-ptr1).int
+pub fun wrapper/inflatecopy(^dest: c-pointer<z-stream-s-c>, ^source: c-pointer<z-stream-s-c>): int
+  external/inflatecopy(dest.ptr, source.ptr).int
 
-pub extern external/inflateReset(^strm: intptr_t): int32
-  c inline "inflateReset((z_streamp)#1)"
+pub extern external/inflatereset(^strm: intptr_t): int32
+  c inline "(int)inflateReset((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateReset(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateReset(koka-ptr).int
+pub fun wrapper/inflatereset(^strm: c-pointer<z-stream-s-c>): int
+  external/inflatereset(strm.ptr).int
 
-pub extern external/inflateReset2(^strm: intptr_t, ^windowBits: int32): int32
-  c inline "inflateReset2((z_streamp)#1, (int)#2)"
+pub extern external/inflatereset2(^strm: intptr_t, ^windowbits: int32): int32
+  c inline "(int)inflateReset2((struct z_stream_s*)#1, (int)#2)"
 
-pub fun wrapper/inflateReset2(^strm: koka-z_streamp, ^windowBits: int): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateReset2(koka-ptr, windowBits.int32).int
+pub fun wrapper/inflatereset2(^strm: c-pointer<z-stream-s-c>, ^windowbits: int): int
+  external/inflatereset2(strm.ptr, windowbits.int32).int
 
-pub extern external/inflatePrime(^strm: intptr_t, ^bits: int32, ^value: int32): int32
-  c inline "inflatePrime((z_streamp)#1, (int)#2, (int)#3)"
+pub extern external/inflateprime(^strm: intptr_t, ^bits: int32, ^value: int32): int32
+  c inline "(int)inflatePrime((struct z_stream_s*)#1, (int)#2, (int)#3)"
 
-pub fun wrapper/inflatePrime(^strm: koka-z_streamp, ^bits: int, ^value: int): int
-  with koka-ptr <- strm.with-ptr
-  external/inflatePrime(koka-ptr, bits.int32, value.int32).int
+pub fun wrapper/inflateprime(^strm: c-pointer<z-stream-s-c>, ^bits: int, ^value: int): int
+  external/inflateprime(strm.ptr, bits.int32, value.int32).int
 
-pub extern external/inflateMark(^strm: intptr_t): int64
-  c inline "inflateMark((z_streamp)#1)"
+pub extern external/inflatemark(^strm: intptr_t): int64
+  c inline "(long)inflateMark((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateMark(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateMark(koka-ptr).int
+pub fun wrapper/inflatemark(^strm: c-pointer<z-stream-s-c>): int
+  external/inflatemark(strm.ptr).int
 
-pub extern external/inflateGetHeader(^strm: intptr_t, ^head: intptr_t): int32
-  c inline "inflateGetHeader((z_streamp)#1, (gz_headerp)#2)"
+pub extern external/inflategetheader(^strm: intptr_t, ^head: intptr_t): int32
+  c inline "(int)inflateGetHeader((struct z_stream_s*)#1, (struct gz_header_s*)#2)"
 
-pub fun wrapper/inflateGetHeader(^strm: koka-z_streamp, ^head: koka-gz_headerp): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- head.with-ptr
-  external/inflateGetHeader(koka-ptr, koka-ptr1).int
+pub fun wrapper/inflategetheader(^strm: c-pointer<z-stream-s-c>, ^head: c-pointer<gz-header-s-c>): int
+  external/inflategetheader(strm.ptr, head.ptr).int
 
-pub extern external/inflateBack(^strm: intptr_t, ^in1: intptr_t, ^in_desc: intptr_t, ^out: intptr_t, ^out_desc: intptr_t): int32
-  c inline "inflateBack((z_streamp)#1, (in_func)#2, (kk_unit_t*)#3, (out_func)#4, (kk_unit_t*)#5)"
+pub extern external/inflateback(^strm: intptr_t, ^in1: intptr_t, ^in-desc: intptr_t, ^out: intptr_t, ^out-desc: intptr_t): int32
+  c inline "(int)inflateBack((struct z_stream_s*)#1, (unsigned int (*)(void*, unsigned char**))#2, (void*)#3, (int (*)(void*, unsigned char*, unsigned int))#4, (void*)#5)"
 
-pub fun wrapper/inflateBack(^strm: koka-z_streamp, ^in1: intptr_t, ^in_desc: owned-c<()>, ^out: intptr_t, ^out_desc: owned-c<()>): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- in_desc.with-ptr
-  with koka-ptr2 <- out_desc.with-ptr
-  external/inflateBack(koka-ptr, in1, koka-ptr1, out, koka-ptr2).int
+pub fun wrapper/inflateback(^strm: c-pointer<z-stream-s-c>, ^in1: c-pointer<intptr_t>, ^in-desc: c-pointer<()>, ^out: c-pointer<intptr_t>, ^out-desc: c-pointer<()>): int
+  external/inflateback(strm.ptr, in1.ptr, in-desc.ptr, out.ptr, out-desc.ptr).int
 
-pub extern external/inflateBackEnd(^strm: intptr_t): int32
-  c inline "inflateBackEnd((z_streamp)#1)"
+pub extern external/inflatebackend(^strm: intptr_t): int32
+  c inline "(int)inflateBackEnd((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateBackEnd(^strm: koka-z_streamp): int
-  with koka-ptr <- strm.with-ptr
-  external/inflateBackEnd(koka-ptr).int
+pub fun wrapper/inflatebackend(^strm: c-pointer<z-stream-s-c>): int
+  external/inflatebackend(strm.ptr).int
 
-pub extern external/zlibCompileFlags(): int64
-  c inline "zlibCompileFlags()"
+pub extern external/zlibcompileflags(): int64
+  c inline "(unsigned long)zlibCompileFlags()"
 
-pub fun wrapper/zlibCompileFlags(): koka-uLong
-  external/zlibCompileFlags().int
+pub fun wrapper/zlibcompileflags(): koka-ulong
+  external/zlibcompileflags().int
 
-pub extern external/compress(^dest: intptr_t, ^destLen: intptr_t, ^source: intptr_t, ^sourceLen: int64): int32
-  c inline "compress((Bytef*)#1, (uLongf*)#2, (Bytef*)#3, (uLong)#4)"
+pub extern external/compress(^dest: intptr_t, ^destlen: intptr_t, ^source: intptr_t, ^sourcelen: int64): int32
+  c inline "(int)compress((unsigned char*)#1, (unsigned long*)#2, (unsigned char*)#3, (unsigned long)#4)"
 
-pub fun wrapper/compress(^dest: owned-c<int8>, ^destLen: owned-c<int64>, ^source: owned-c<int8>, ^sourceLen: koka-uLong): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- destLen.with-ptr
-  with koka-ptr2 <- source.with-ptr
-  external/compress(koka-ptr, koka-ptr1, koka-ptr2, sourceLen.int64).int
+pub fun wrapper/compress(^dest: c-pointer<int8>, ^destlen: c-pointer<int64>, ^source: c-pointer<int8>, ^sourcelen: koka-ulong): int
+  external/compress(dest.ptr, destlen.ptr, source.ptr, sourcelen.int64).int
 
-pub extern external/compress2(^dest: intptr_t, ^destLen: intptr_t, ^source: intptr_t, ^sourceLen: int64, ^level: int32): int32
-  c inline "compress2((Bytef*)#1, (uLongf*)#2, (Bytef*)#3, (uLong)#4, (int)#5)"
+pub extern external/compress2(^dest: intptr_t, ^destlen: intptr_t, ^source: intptr_t, ^sourcelen: int64, ^level: int32): int32
+  c inline "(int)compress2((unsigned char*)#1, (unsigned long*)#2, (unsigned char*)#3, (unsigned long)#4, (int)#5)"
 
-pub fun wrapper/compress2(^dest: owned-c<int8>, ^destLen: owned-c<int64>, ^source: owned-c<int8>, ^sourceLen: koka-uLong, ^level: int): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- destLen.with-ptr
-  with koka-ptr2 <- source.with-ptr
-  external/compress2(koka-ptr, koka-ptr1, koka-ptr2, sourceLen.int64, level.int32).int
+pub fun wrapper/compress2(^dest: c-pointer<int8>, ^destlen: c-pointer<int64>, ^source: c-pointer<int8>, ^sourcelen: koka-ulong, ^level: int): int
+  external/compress2(dest.ptr, destlen.ptr, source.ptr, sourcelen.int64, level.int32).int
 
-pub extern external/compressBound(^sourceLen: int64): int64
-  c inline "compressBound((uLong)#1)"
+pub extern external/compressbound(^sourcelen: int64): int64
+  c inline "(unsigned long)compressBound((unsigned long)#1)"
 
-pub fun wrapper/compressBound(^sourceLen: koka-uLong): koka-uLong
-  external/compressBound(sourceLen.int64).int
+pub fun wrapper/compressbound(^sourcelen: koka-ulong): koka-ulong
+  external/compressbound(sourcelen.int64).int
 
-pub extern external/uncompress(^dest: intptr_t, ^destLen: intptr_t, ^source: intptr_t, ^sourceLen: int64): int32
-  c inline "uncompress((Bytef*)#1, (uLongf*)#2, (Bytef*)#3, (uLong)#4)"
+pub extern external/uncompress(^dest: intptr_t, ^destlen: intptr_t, ^source: intptr_t, ^sourcelen: int64): int32
+  c inline "(int)uncompress((unsigned char*)#1, (unsigned long*)#2, (unsigned char*)#3, (unsigned long)#4)"
 
-pub fun wrapper/uncompress(^dest: owned-c<int8>, ^destLen: owned-c<int64>, ^source: owned-c<int8>, ^sourceLen: koka-uLong): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- destLen.with-ptr
-  with koka-ptr2 <- source.with-ptr
-  external/uncompress(koka-ptr, koka-ptr1, koka-ptr2, sourceLen.int64).int
+pub fun wrapper/uncompress(^dest: c-pointer<int8>, ^destlen: c-pointer<int64>, ^source: c-pointer<int8>, ^sourcelen: koka-ulong): int
+  external/uncompress(dest.ptr, destlen.ptr, source.ptr, sourcelen.int64).int
 
-pub extern external/uncompress2(^dest: intptr_t, ^destLen: intptr_t, ^source: intptr_t, ^sourceLen: intptr_t): int32
-  c inline "uncompress2((Bytef*)#1, (uLongf*)#2, (Bytef*)#3, (uLong*)#4)"
+pub extern external/uncompress2(^dest: intptr_t, ^destlen: intptr_t, ^source: intptr_t, ^sourcelen: intptr_t): int32
+  c inline "(int)uncompress2((unsigned char*)#1, (unsigned long*)#2, (unsigned char*)#3, (unsigned long*)#4)"
 
-pub fun wrapper/uncompress2(^dest: owned-c<int8>, ^destLen: owned-c<int64>, ^source: owned-c<int8>, ^sourceLen: owned-c<int64>): int
-  with koka-ptr <- dest.with-ptr
-  with koka-ptr1 <- destLen.with-ptr
-  with koka-ptr2 <- source.with-ptr
-  with koka-ptr3 <- sourceLen.with-ptr
-  external/uncompress2(koka-ptr, koka-ptr1, koka-ptr2, koka-ptr3).int
+pub fun wrapper/uncompress2(^dest: c-pointer<int8>, ^destlen: c-pointer<int64>, ^source: c-pointer<int8>, ^sourcelen: c-pointer<int64>): int
+  external/uncompress2(dest.ptr, destlen.ptr, source.ptr, sourcelen.ptr).int
 
 pub extern external/gzdopen(^fd: int32, ^mode: intptr_t): intptr_t
-  c inline "gzdopen((int)#1, (char*)#2)"
+  c inline "(intptr_t)gzdopen((int)#1, (char*)#2)"
 
-pub fun wrapper/gzdopen(^fd: int, ^mode: owned-c<int8>): koka-gzFile
-  with koka-ptr <- mode.with-ptr
-  external/gzdopen(fd.int32, koka-ptr).c-own
+pub fun wrapper/gzdopen(^fd: int, ^mode: c-pointer<int8>): c-pointer<gzfile-s-c>
+  C-pointer(external/gzdopen(fd.int32, mode.ptr))
 
 pub extern external/gzbuffer(^file: intptr_t, ^size: int32): int32
-  c inline "gzbuffer((gzFile)#1, (unsigned int)#2)"
+  c inline "(int)gzbuffer((struct gzFile_s*)#1, (unsigned int)#2)"
 
-pub fun wrapper/gzbuffer(^file: koka-gzFile, ^size: int): int
-  with koka-ptr <- file.with-ptr
-  external/gzbuffer(koka-ptr, size.int32).int
+pub fun wrapper/gzbuffer(^file: c-pointer<gzfile-s-c>, ^size: int): int
+  external/gzbuffer(file.ptr, size.int32).int
 
 pub extern external/gzsetparams(^file: intptr_t, ^level: int32, ^strategy: int32): int32
-  c inline "gzsetparams((gzFile)#1, (int)#2, (int)#3)"
+  c inline "(int)gzsetparams((struct gzFile_s*)#1, (int)#2, (int)#3)"
 
-pub fun wrapper/gzsetparams(^file: koka-gzFile, ^level: int, ^strategy: int): int
-  with koka-ptr <- file.with-ptr
-  external/gzsetparams(koka-ptr, level.int32, strategy.int32).int
+pub fun wrapper/gzsetparams(^file: c-pointer<gzfile-s-c>, ^level: int, ^strategy: int): int
+  external/gzsetparams(file.ptr, level.int32, strategy.int32).int
 
 pub extern external/gzread(^file: intptr_t, ^buf: intptr_t, ^len: int32): int32
-  c inline "gzread((gzFile)#1, (voidp)#2, (unsigned int)#3)"
+  c inline "(int)gzread((struct gzFile_s*)#1, (void*)#2, (unsigned int)#3)"
 
-pub fun wrapper/gzread(^file: koka-gzFile, ^buf: koka-voidp, ^len: int): int
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- buf.with-ptr
-  external/gzread(koka-ptr, koka-ptr1, len.int32).int
+pub fun wrapper/gzread(^file: c-pointer<gzfile-s-c>, ^buf: c-pointer<()>, ^len: int): int
+  external/gzread(file.ptr, buf.ptr, len.int32).int
 
-pub extern external/gzfread(^buf: intptr_t, ^size: z-size-t, ^nitems: z-size-t, ^file: intptr_t): z-size-t
-  c inline "gzfread((voidp)#1, (z_size_t)#2, (z_size_t)#3, (gzFile)#4)"
+pub extern external/gzfread(^buf: intptr_t, ^size: ssize_t, ^nitems: ssize_t, ^file: intptr_t): ssize_t
+  c inline "(ssize_t)gzfread((void*)#1, (ssize_t)#2, (ssize_t)#3, (struct gzFile_s*)#4)"
 
-pub fun wrapper/gzfread(^buf: koka-voidp, ^size: z-size-t, ^nitems: z-size-t, ^file: koka-gzFile): z-size-t
-  with koka-ptr <- buf.with-ptr
-  with koka-ptr1 <- file.with-ptr
-  external/gzfread(koka-ptr, size, nitems, koka-ptr1)
+pub fun wrapper/gzfread(^buf: c-pointer<()>, ^size: z-size-t, ^nitems: z-size-t, ^file: c-pointer<gzfile-s-c>): z-size-t
+  external/gzfread(buf.ptr, size, nitems, file.ptr)
 
 pub extern external/gzwrite(^file: intptr_t, ^buf: intptr_t, ^len: int32): int32
-  c inline "gzwrite((gzFile)#1, (voidpc)#2, (unsigned int)#3)"
+  c inline "(int)gzwrite((struct gzFile_s*)#1, (void*)#2, (unsigned int)#3)"
 
-pub fun wrapper/gzwrite(^file: koka-gzFile, ^buf: koka-voidpc, ^len: int): int
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- buf.with-ptr
-  external/gzwrite(koka-ptr, koka-ptr1, len.int32).int
+pub fun wrapper/gzwrite(^file: c-pointer<gzfile-s-c>, ^buf: c-pointer<()>, ^len: int): int
+  external/gzwrite(file.ptr, buf.ptr, len.int32).int
 
-pub extern external/gzfwrite(^buf: intptr_t, ^size: z-size-t, ^nitems: z-size-t, ^file: intptr_t): z-size-t
-  c inline "gzfwrite((voidpc)#1, (z_size_t)#2, (z_size_t)#3, (gzFile)#4)"
+pub extern external/gzfwrite(^buf: intptr_t, ^size: ssize_t, ^nitems: ssize_t, ^file: intptr_t): ssize_t
+  c inline "(ssize_t)gzfwrite((void*)#1, (ssize_t)#2, (ssize_t)#3, (struct gzFile_s*)#4)"
 
-pub fun wrapper/gzfwrite(^buf: koka-voidpc, ^size: z-size-t, ^nitems: z-size-t, ^file: koka-gzFile): z-size-t
-  with koka-ptr <- buf.with-ptr
-  with koka-ptr1 <- file.with-ptr
-  external/gzfwrite(koka-ptr, size, nitems, koka-ptr1)
+pub fun wrapper/gzfwrite(^buf: c-pointer<()>, ^size: z-size-t, ^nitems: z-size-t, ^file: c-pointer<gzfile-s-c>): z-size-t
+  external/gzfwrite(buf.ptr, size, nitems, file.ptr)
 
 pub extern external/gzprintf(^file: intptr_t, ^format: intptr_t): int32
-  c inline "gzprintf((gzFile)#1, (char*)#2)"
+  c inline "(int)gzprintf((struct gzFile_s*)#1, (char*)#2)"
 
-pub fun wrapper/gzprintf(^file: koka-gzFile, ^format: owned-c<int8>): int
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- format.with-ptr
-  external/gzprintf(koka-ptr, koka-ptr1).int
+pub fun wrapper/gzprintf(^file: c-pointer<gzfile-s-c>, ^format: c-pointer<int8>): int
+  external/gzprintf(file.ptr, format.ptr).int
 
 pub extern external/gzputs(^file: intptr_t, ^s: intptr_t): int32
-  c inline "gzputs((gzFile)#1, (char*)#2)"
+  c inline "(int)gzputs((struct gzFile_s*)#1, (char*)#2)"
 
-pub fun wrapper/gzputs(^file: koka-gzFile, ^s: owned-c<int8>): int
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- s.with-ptr
-  external/gzputs(koka-ptr, koka-ptr1).int
+pub fun wrapper/gzputs(^file: c-pointer<gzfile-s-c>, ^s: c-pointer<int8>): int
+  external/gzputs(file.ptr, s.ptr).int
 
 pub extern external/gzgets(^file: intptr_t, ^buf: intptr_t, ^len: int32): intptr_t
-  c inline "gzgets((gzFile)#1, (char*)#2, (int)#3)"
+  c inline "(intptr_t)gzgets((struct gzFile_s*)#1, (char*)#2, (int)#3)"
 
-pub fun wrapper/gzgets(^file: koka-gzFile, ^buf: owned-c<int8>, ^len: int): owned-c<int8>
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- buf.with-ptr
-  external/gzgets(koka-ptr, koka-ptr1, len.int32).c-own
+pub fun wrapper/gzgets(^file: c-pointer<gzfile-s-c>, ^buf: c-pointer<int8>, ^len: int): c-pointer<int8>
+  C-pointer(external/gzgets(file.ptr, buf.ptr, len.int32))
 
 pub extern external/gzputc(^file: intptr_t, ^c: int32): int32
-  c inline "gzputc((gzFile)#1, (int)#2)"
+  c inline "(int)gzputc((struct gzFile_s*)#1, (int)#2)"
 
-pub fun wrapper/gzputc(^file: koka-gzFile, ^c: int): int
-  with koka-ptr <- file.with-ptr
-  external/gzputc(koka-ptr, c.int32).int
+pub fun wrapper/gzputc(^file: c-pointer<gzfile-s-c>, ^c: int): int
+  external/gzputc(file.ptr, c.int32).int
 
 pub extern external/gzgetc(^file: intptr_t): int32
-  c inline "gzgetc((gzFile)#1)"
+  c inline "(int)gzgetc((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzgetc(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzgetc(koka-ptr).int
+pub fun wrapper/gzgetc(^file: c-pointer<gzfile-s-c>): int
+  external/gzgetc(file.ptr).int
 
 pub extern external/gzungetc(^c: int32, ^file: intptr_t): int32
-  c inline "gzungetc((int)#1, (gzFile)#2)"
+  c inline "(int)gzungetc((int)#1, (struct gzFile_s*)#2)"
 
-pub fun wrapper/gzungetc(^c: int, ^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzungetc(c.int32, koka-ptr).int
+pub fun wrapper/gzungetc(^c: int, ^file: c-pointer<gzfile-s-c>): int
+  external/gzungetc(c.int32, file.ptr).int
 
 pub extern external/gzflush(^file: intptr_t, ^flush: int32): int32
-  c inline "gzflush((gzFile)#1, (int)#2)"
+  c inline "(int)gzflush((struct gzFile_s*)#1, (int)#2)"
 
-pub fun wrapper/gzflush(^file: koka-gzFile, ^flush: int): int
-  with koka-ptr <- file.with-ptr
-  external/gzflush(koka-ptr, flush.int32).int
+pub fun wrapper/gzflush(^file: c-pointer<gzfile-s-c>, ^flush: int): int
+  external/gzflush(file.ptr, flush.int32).int
 
 pub extern external/gzrewind(^file: intptr_t): int32
-  c inline "gzrewind((gzFile)#1)"
+  c inline "(int)gzrewind((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzrewind(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzrewind(koka-ptr).int
+pub fun wrapper/gzrewind(^file: c-pointer<gzfile-s-c>): int
+  external/gzrewind(file.ptr).int
 
 pub extern external/gzeof(^file: intptr_t): int32
-  c inline "gzeof((gzFile)#1)"
+  c inline "(int)gzeof((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzeof(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzeof(koka-ptr).int
+pub fun wrapper/gzeof(^file: c-pointer<gzfile-s-c>): int
+  external/gzeof(file.ptr).int
 
 pub extern external/gzdirect(^file: intptr_t): int32
-  c inline "gzdirect((gzFile)#1)"
+  c inline "(int)gzdirect((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzdirect(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzdirect(koka-ptr).int
+pub fun wrapper/gzdirect(^file: c-pointer<gzfile-s-c>): int
+  external/gzdirect(file.ptr).int
 
 pub extern external/gzclose(^file: intptr_t): int32
-  c inline "gzclose((gzFile)#1)"
+  c inline "(int)gzclose((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzclose(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzclose(koka-ptr).int
+pub fun wrapper/gzclose(^file: c-pointer<gzfile-s-c>): int
+  external/gzclose(file.ptr).int
 
-pub extern external/gzclose_r(^file: intptr_t): int32
-  c inline "gzclose_r((gzFile)#1)"
+pub extern external/gzclose-r(^file: intptr_t): int32
+  c inline "(int)gzclose_r((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzclose_r(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzclose_r(koka-ptr).int
+pub fun wrapper/gzclose-r(^file: c-pointer<gzfile-s-c>): int
+  external/gzclose-r(file.ptr).int
 
-pub extern external/gzclose_w(^file: intptr_t): int32
-  c inline "gzclose_w((gzFile)#1)"
+pub extern external/gzclose-w(^file: intptr_t): int32
+  c inline "(int)gzclose_w((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzclose_w(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzclose_w(koka-ptr).int
+pub fun wrapper/gzclose-w(^file: c-pointer<gzfile-s-c>): int
+  external/gzclose-w(file.ptr).int
 
 pub extern external/gzerror(^file: intptr_t, ^errnum: intptr_t): intptr_t
-  c inline "gzerror((gzFile)#1, (int*)#2)"
+  c inline "(intptr_t)gzerror((struct gzFile_s*)#1, (int*)#2)"
 
-pub fun wrapper/gzerror(^file: koka-gzFile, ^errnum: owned-c<int32>): owned-c<int8>
-  with koka-ptr <- file.with-ptr
-  with koka-ptr1 <- errnum.with-ptr
-  external/gzerror(koka-ptr, koka-ptr1).c-own
+pub fun wrapper/gzerror(^file: c-pointer<gzfile-s-c>, ^errnum: c-pointer<int32>): c-pointer<int8>
+  C-pointer(external/gzerror(file.ptr, errnum.ptr))
 
 pub extern external/gzclearerr(^file: intptr_t): ()
-  c inline "gzclearerr((gzFile)#1)"
+  c inline "(void)gzclearerr((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzclearerr(^file: koka-gzFile): ()
-  with koka-ptr <- file.with-ptr
-  external/gzclearerr(koka-ptr)
+pub fun wrapper/gzclearerr(^file: c-pointer<gzfile-s-c>): ()
+  external/gzclearerr(file.ptr)
 
 pub extern external/adler32(^adler: int64, ^buf: intptr_t, ^len: int32): int64
-  c inline "adler32((uLong)#1, (Bytef*)#2, (uInt)#3)"
+  c inline "(unsigned long)adler32((unsigned long)#1, (unsigned char*)#2, (unsigned int)#3)"
 
-pub fun wrapper/adler32(^adler: koka-uLong, ^buf: owned-c<int8>, ^len: koka-uInt): koka-uLong
-  with koka-ptr <- buf.with-ptr
-  external/adler32(adler.int64, koka-ptr, len.int32).int
+pub fun wrapper/adler32(^adler: koka-ulong, ^buf: c-pointer<int8>, ^len: koka-uint): koka-ulong
+  external/adler32(adler.int64, buf.ptr, len.int32).int
 
-pub extern external/adler32_z(^adler: int64, ^buf: intptr_t, ^len: z-size-t): int64
-  c inline "adler32_z((uLong)#1, (Bytef*)#2, (z_size_t)#3)"
+pub extern external/adler32-z(^adler: int64, ^buf: intptr_t, ^len: ssize_t): int64
+  c inline "(unsigned long)adler32_z((unsigned long)#1, (unsigned char*)#2, (ssize_t)#3)"
 
-pub fun wrapper/adler32_z(^adler: koka-uLong, ^buf: owned-c<int8>, ^len: z-size-t): koka-uLong
-  with koka-ptr <- buf.with-ptr
-  external/adler32_z(adler.int64, koka-ptr, len).int
+pub fun wrapper/adler32-z(^adler: koka-ulong, ^buf: c-pointer<int8>, ^len: z-size-t): koka-ulong
+  external/adler32-z(adler.int64, buf.ptr, len).int
 
 pub extern external/crc32(^crc: int64, ^buf: intptr_t, ^len: int32): int64
-  c inline "crc32((uLong)#1, (Bytef*)#2, (uInt)#3)"
+  c inline "(unsigned long)crc32((unsigned long)#1, (unsigned char*)#2, (unsigned int)#3)"
 
-pub fun wrapper/crc32(^crc: koka-uLong, ^buf: owned-c<int8>, ^len: koka-uInt): koka-uLong
-  with koka-ptr <- buf.with-ptr
-  external/crc32(crc.int64, koka-ptr, len.int32).int
+pub fun wrapper/crc32(^crc: koka-ulong, ^buf: c-pointer<int8>, ^len: koka-uint): koka-ulong
+  external/crc32(crc.int64, buf.ptr, len.int32).int
 
-pub extern external/crc32_z(^adler: int64, ^buf: intptr_t, ^len: z-size-t): int64
-  c inline "crc32_z((uLong)#1, (Bytef*)#2, (z_size_t)#3)"
+pub extern external/crc32-z(^adler: int64, ^buf: intptr_t, ^len: ssize_t): int64
+  c inline "(unsigned long)crc32_z((unsigned long)#1, (unsigned char*)#2, (ssize_t)#3)"
 
-pub fun wrapper/crc32_z(^adler: koka-uLong, ^buf: owned-c<int8>, ^len: z-size-t): koka-uLong
-  with koka-ptr <- buf.with-ptr
-  external/crc32_z(adler.int64, koka-ptr, len).int
+pub fun wrapper/crc32-z(^adler: koka-ulong, ^buf: c-pointer<int8>, ^len: z-size-t): koka-ulong
+  external/crc32-z(adler.int64, buf.ptr, len).int
 
-pub extern external/deflateInit_(^strm: intptr_t, ^level: int32, ^version: intptr_t, ^stream_size: int32): int32
-  c inline "deflateInit_((z_streamp)#1, (int)#2, (char*)#3, (int)#4)"
+pub extern external/deflateinit-(^strm: intptr_t, ^level: int32, ^version: intptr_t, ^stream-size: int32): int32
+  c inline "(int)deflateInit_((struct z_stream_s*)#1, (int)#2, (char*)#3, (int)#4)"
 
-pub fun wrapper/deflateInit_(^strm: koka-z_streamp, ^level: int, ^version: owned-c<int8>, ^stream_size: int): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- version.with-ptr
-  external/deflateInit_(koka-ptr, level.int32, koka-ptr1, stream_size.int32).int
+pub fun wrapper/deflateinit-(^strm: c-pointer<z-stream-s-c>, ^level: int, ^version: c-pointer<int8>, ^stream-size: int): int
+  external/deflateinit-(strm.ptr, level.int32, version.ptr, stream-size.int32).int
 
-pub extern external/inflateInit_(^strm: intptr_t, ^version: intptr_t, ^stream_size: int32): int32
-  c inline "inflateInit_((z_streamp)#1, (char*)#2, (int)#3)"
+pub extern external/inflateinit-(^strm: intptr_t, ^version: intptr_t, ^stream-size: int32): int32
+  c inline "(int)inflateInit_((struct z_stream_s*)#1, (char*)#2, (int)#3)"
 
-pub fun wrapper/inflateInit_(^strm: koka-z_streamp, ^version: owned-c<int8>, ^stream_size: int): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- version.with-ptr
-  external/inflateInit_(koka-ptr, koka-ptr1, stream_size.int32).int
+pub fun wrapper/inflateinit-(^strm: c-pointer<z-stream-s-c>, ^version: c-pointer<int8>, ^stream-size: int): int
+  external/inflateinit-(strm.ptr, version.ptr, stream-size.int32).int
 
-pub extern external/deflateInit2_(^strm: intptr_t, ^level: int32, ^method: int32, ^windowBits: int32, ^memLevel: int32, ^strategy: int32, ^version: intptr_t, ^stream_size: int32): int32
-  c inline "deflateInit2_((z_streamp)#1, (int)#2, (int)#3, (int)#4, (int)#5, (int)#6, (char*)#7, (int)#8)"
+pub extern external/deflateinit2-(^strm: intptr_t, ^level: int32, ^method: int32, ^windowbits: int32, ^memlevel: int32, ^strategy: int32, ^version: intptr_t, ^stream-size: int32): int32
+  c inline "(int)deflateInit2_((struct z_stream_s*)#1, (int)#2, (int)#3, (int)#4, (int)#5, (int)#6, (char*)#7, (int)#8)"
 
-pub fun wrapper/deflateInit2_(^strm: koka-z_streamp, ^level: int, ^method: int, ^windowBits: int, ^memLevel: int, ^strategy: int, ^version: owned-c<int8>, ^stream_size: int): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- version.with-ptr
-  external/deflateInit2_(koka-ptr, level.int32, method.int32, windowBits.int32, memLevel.int32, strategy.int32, koka-ptr1, stream_size.int32).int
+pub fun wrapper/deflateinit2-(^strm: c-pointer<z-stream-s-c>, ^level: int, ^method: int, ^windowbits: int, ^memlevel: int, ^strategy: int, ^version: c-pointer<int8>, ^stream-size: int): int
+  external/deflateinit2-(strm.ptr, level.int32, method.int32, windowbits.int32, memlevel.int32, strategy.int32, version.ptr, stream-size.int32).int
 
-pub extern external/inflateInit2_(^strm: intptr_t, ^windowBits: int32, ^version: intptr_t, ^stream_size: int32): int32
-  c inline "inflateInit2_((z_streamp)#1, (int)#2, (char*)#3, (int)#4)"
+pub extern external/inflateinit2-(^strm: intptr_t, ^windowbits: int32, ^version: intptr_t, ^stream-size: int32): int32
+  c inline "(int)inflateInit2_((struct z_stream_s*)#1, (int)#2, (char*)#3, (int)#4)"
 
-pub fun wrapper/inflateInit2_(^strm: koka-z_streamp, ^windowBits: int, ^version: owned-c<int8>, ^stream_size: int): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- version.with-ptr
-  external/inflateInit2_(koka-ptr, windowBits.int32, koka-ptr1, stream_size.int32).int
+pub fun wrapper/inflateinit2-(^strm: c-pointer<z-stream-s-c>, ^windowbits: int, ^version: c-pointer<int8>, ^stream-size: int): int
+  external/inflateinit2-(strm.ptr, windowbits.int32, version.ptr, stream-size.int32).int
 
-pub extern external/inflateBackInit_(^strm: intptr_t, ^windowBits: int32, ^window: intptr_t, ^version: intptr_t, ^stream_size: int32): int32
-  c inline "inflateBackInit_((z_streamp)#1, (int)#2, (unsigned char*)#3, (char*)#4, (int)#5)"
+pub extern external/inflatebackinit-(^strm: intptr_t, ^windowbits: int32, ^window: intptr_t, ^version: intptr_t, ^stream-size: int32): int32
+  c inline "(int)inflateBackInit_((struct z_stream_s*)#1, (int)#2, (unsigned char*)#3, (char*)#4, (int)#5)"
 
-pub fun wrapper/inflateBackInit_(^strm: koka-z_streamp, ^windowBits: int, ^window: owned-c<int8>, ^version: owned-c<int8>, ^stream_size: int): int
-  with koka-ptr <- strm.with-ptr
-  with koka-ptr1 <- window.with-ptr
-  with koka-ptr2 <- version.with-ptr
-  external/inflateBackInit_(koka-ptr, windowBits.int32, koka-ptr1, koka-ptr2, stream_size.int32).int
+pub fun wrapper/inflatebackinit-(^strm: c-pointer<z-stream-s-c>, ^windowbits: int, ^window: c-pointer<int8>, ^version: c-pointer<int8>, ^stream-size: int): int
+  external/inflatebackinit-(strm.ptr, windowbits.int32, window.ptr, version.ptr, stream-size.int32).int
 
-pub extern external/gzgetc_(^file: intptr_t): int32
-  c inline "gzgetc_((gzFile)#1)"
+pub extern external/gzgetc-(^file: intptr_t): int32
+  c inline "(int)gzgetc_((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzgetc_(^file: koka-gzFile): int
-  with koka-ptr <- file.with-ptr
-  external/gzgetc_(koka-ptr).int
+pub fun wrapper/gzgetc-(^file: c-pointer<gzfile-s-c>): int
+  external/gzgetc-(file.ptr).int
 
 pub extern external/gzopen(^arg0: intptr_t, ^arg1: intptr_t): intptr_t
-  c inline "gzopen((char*)#1, (char*)#2)"
+  c inline "(intptr_t)gzopen((char*)#1, (char*)#2)"
 
-pub fun wrapper/gzopen(^arg0: owned-c<int8>, ^arg1: owned-c<int8>): koka-gzFile
-  with koka-ptr <- arg0.with-ptr
-  with koka-ptr1 <- arg1.with-ptr
-  external/gzopen(koka-ptr, koka-ptr1).c-own
+pub fun wrapper/gzopen(^arg0: c-pointer<int8>, ^arg1: c-pointer<int8>): c-pointer<gzfile-s-c>
+  C-pointer(external/gzopen(arg0.ptr, arg1.ptr))
 
 pub extern external/gzseek(^arg0: intptr_t, ^arg1: int64, ^arg2: int32): int64
-  c inline "gzseek((gzFile)#1, (off_t)#2, (int)#3)"
+  c inline "(long long)gzseek((struct gzFile_s*)#1, (long long)#2, (int)#3)"
 
-pub fun wrapper/gzseek(^arg0: koka-gzFile, ^arg1: koka-off_t, ^arg2: int): koka-off_t
-  with koka-ptr <- arg0.with-ptr
-  external/gzseek(koka-ptr, arg1.int64, arg2.int32).int
+pub fun wrapper/gzseek(^arg0: c-pointer<gzfile-s-c>, ^arg1: koka-off-t, ^arg2: int): koka-off-t
+  external/gzseek(arg0.ptr, arg1.int64, arg2.int32).int
 
 pub extern external/gztell(^arg0: intptr_t): int64
-  c inline "gztell((gzFile)#1)"
+  c inline "(long long)gztell((struct gzFile_s*)#1)"
 
-pub fun wrapper/gztell(^arg0: koka-gzFile): koka-off_t
-  with koka-ptr <- arg0.with-ptr
-  external/gztell(koka-ptr).int
+pub fun wrapper/gztell(^arg0: c-pointer<gzfile-s-c>): koka-off-t
+  external/gztell(arg0.ptr).int
 
 pub extern external/gzoffset(^arg0: intptr_t): int64
-  c inline "gzoffset((gzFile)#1)"
+  c inline "(long long)gzoffset((struct gzFile_s*)#1)"
 
-pub fun wrapper/gzoffset(^arg0: koka-gzFile): koka-off_t
-  with koka-ptr <- arg0.with-ptr
-  external/gzoffset(koka-ptr).int
+pub fun wrapper/gzoffset(^arg0: c-pointer<gzfile-s-c>): koka-off-t
+  external/gzoffset(arg0.ptr).int
 
-pub extern external/adler32_combine(^arg0: int64, ^arg1: int64, ^arg2: int64): int64
-  c inline "adler32_combine((uLong)#1, (uLong)#2, (off_t)#3)"
+pub extern external/adler32-combine(^arg0: int64, ^arg1: int64, ^arg2: int64): int64
+  c inline "(unsigned long)adler32_combine((unsigned long)#1, (unsigned long)#2, (long long)#3)"
 
-pub fun wrapper/adler32_combine(^arg0: koka-uLong, ^arg1: koka-uLong, ^arg2: koka-off_t): koka-uLong
-  external/adler32_combine(arg0.int64, arg1.int64, arg2.int64).int
+pub fun wrapper/adler32-combine(^arg0: koka-ulong, ^arg1: koka-ulong, ^arg2: koka-off-t): koka-ulong
+  external/adler32-combine(arg0.int64, arg1.int64, arg2.int64).int
 
-pub extern external/crc32_combine(^arg0: int64, ^arg1: int64, ^arg2: int64): int64
-  c inline "crc32_combine((uLong)#1, (uLong)#2, (off_t)#3)"
+pub extern external/crc32-combine(^arg0: int64, ^arg1: int64, ^arg2: int64): int64
+  c inline "(unsigned long)crc32_combine((unsigned long)#1, (unsigned long)#2, (long long)#3)"
 
-pub fun wrapper/crc32_combine(^arg0: koka-uLong, ^arg1: koka-uLong, ^arg2: koka-off_t): koka-uLong
-  external/crc32_combine(arg0.int64, arg1.int64, arg2.int64).int
+pub fun wrapper/crc32-combine(^arg0: koka-ulong, ^arg1: koka-ulong, ^arg2: koka-off-t): koka-ulong
+  external/crc32-combine(arg0.int64, arg1.int64, arg2.int64).int
 
-pub extern external/zError(^arg0: int32): intptr_t
-  c inline "zError((int)#1)"
+pub extern external/zerror(^arg0: int32): intptr_t
+  c inline "(intptr_t)zError((int)#1)"
 
-pub fun wrapper/zError(^arg0: int): owned-c<int8>
-  external/zError(arg0.int32).c-own
+pub fun wrapper/zerror(^arg0: int): c-pointer<int8>
+  C-pointer(external/zerror(arg0.int32))
 
-pub extern external/inflateSyncPoint(^arg0: intptr_t): int32
-  c inline "inflateSyncPoint((z_streamp)#1)"
+pub extern external/inflatesyncpoint(^arg0: intptr_t): int32
+  c inline "(int)inflateSyncPoint((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateSyncPoint(^arg0: koka-z_streamp): int
-  with koka-ptr <- arg0.with-ptr
-  external/inflateSyncPoint(koka-ptr).int
+pub fun wrapper/inflatesyncpoint(^arg0: c-pointer<z-stream-s-c>): int
+  external/inflatesyncpoint(arg0.ptr).int
 
-pub extern external/get_crc_table(): intptr_t
-  c inline "get_crc_table()"
+pub extern external/get-crc-table(): intptr_t
+  c inline "(intptr_t)get_crc_table()"
 
-pub fun wrapper/get_crc_table(): owned-c<int32>
-  external/get_crc_table().c-own
+pub fun wrapper/get-crc-table(): c-pointer<int32>
+  C-pointer(external/get-crc-table())
 
-pub extern external/inflateUndermine(^arg0: intptr_t, ^arg1: int32): int32
-  c inline "inflateUndermine((z_streamp)#1, (int)#2)"
+pub extern external/inflateundermine(^arg0: intptr_t, ^arg1: int32): int32
+  c inline "(int)inflateUndermine((struct z_stream_s*)#1, (int)#2)"
 
-pub fun wrapper/inflateUndermine(^arg0: koka-z_streamp, ^arg1: int): int
-  with koka-ptr <- arg0.with-ptr
-  external/inflateUndermine(koka-ptr, arg1.int32).int
+pub fun wrapper/inflateundermine(^arg0: c-pointer<z-stream-s-c>, ^arg1: int): int
+  external/inflateundermine(arg0.ptr, arg1.int32).int
 
-pub extern external/inflateValidate(^arg0: intptr_t, ^arg1: int32): int32
-  c inline "inflateValidate((z_streamp)#1, (int)#2)"
+pub extern external/inflatevalidate(^arg0: intptr_t, ^arg1: int32): int32
+  c inline "(int)inflateValidate((struct z_stream_s*)#1, (int)#2)"
 
-pub fun wrapper/inflateValidate(^arg0: koka-z_streamp, ^arg1: int): int
-  with koka-ptr <- arg0.with-ptr
-  external/inflateValidate(koka-ptr, arg1.int32).int
+pub fun wrapper/inflatevalidate(^arg0: c-pointer<z-stream-s-c>, ^arg1: int): int
+  external/inflatevalidate(arg0.ptr, arg1.int32).int
 
-pub extern external/inflateCodesUsed(^arg0: intptr_t): int64
-  c inline "inflateCodesUsed((z_streamp)#1)"
+pub extern external/inflatecodesused(^arg0: intptr_t): int64
+  c inline "(unsigned long)inflateCodesUsed((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateCodesUsed(^arg0: koka-z_streamp): int
-  with koka-ptr <- arg0.with-ptr
-  external/inflateCodesUsed(koka-ptr).int
+pub fun wrapper/inflatecodesused(^arg0: c-pointer<z-stream-s-c>): int
+  external/inflatecodesused(arg0.ptr).int
 
-pub extern external/inflateResetKeep(^arg0: intptr_t): int32
-  c inline "inflateResetKeep((z_streamp)#1)"
+pub extern external/inflateresetkeep(^arg0: intptr_t): int32
+  c inline "(int)inflateResetKeep((struct z_stream_s*)#1)"
 
-pub fun wrapper/inflateResetKeep(^arg0: koka-z_streamp): int
-  with koka-ptr <- arg0.with-ptr
-  external/inflateResetKeep(koka-ptr).int
+pub fun wrapper/inflateresetkeep(^arg0: c-pointer<z-stream-s-c>): int
+  external/inflateresetkeep(arg0.ptr).int
 
-pub extern external/deflateResetKeep(^arg0: intptr_t): int32
-  c inline "deflateResetKeep((z_streamp)#1)"
+pub extern external/deflateresetkeep(^arg0: intptr_t): int32
+  c inline "(int)deflateResetKeep((struct z_stream_s*)#1)"
 
-pub fun wrapper/deflateResetKeep(^arg0: koka-z_streamp): int
-  with koka-ptr <- arg0.with-ptr
-  external/deflateResetKeep(koka-ptr).int
+pub fun wrapper/deflateresetkeep(^arg0: c-pointer<z-stream-s-c>): int
+  external/deflateresetkeep(arg0.ptr).int
 
 pub struct internal-state
 pub type internal-state-c
+pub alias internal-statep = c-pointer<internal-state-c>
 pub alias internal-statec = owned-c<internal-state-c>
 pub alias internal-statecb<s::S> = borrowed-c<s,internal-state-c>
-pub alias internal-stateca = owned-c<c-array<internal-state>>
-
-pub fun internal-state/to-koka(s: internal-statec): internal-state
-  Internal-state()
+pub alias internal-stateca = owned-c<c-array<internal-state-c>>
 
 pub struct z-stream-s
-  next-in: owned-c<int8>
-  avail-in: koka-uInt
-  total-in: koka-uLong
-  next-out: owned-c<int8>
-  avail-out: koka-uInt
-  total-out: koka-uLong
-  msg: owned-c<int8>
+  next-in: c-pointer<int8>
+  avail-in: koka-uint
+  total-in: koka-ulong
+  next-out: c-pointer<int8>
+  avail-out: koka-uint
+  total-out: koka-ulong
+  msg: c-pointer<int8>
   state: internal-state
-  zalloc: intptr_t
-  zfree: intptr_t
-  opaque: koka-voidpf
+  zalloc: c-pointer<intptr_t>
+  zfree: c-pointer<intptr_t>
+  opaque: c-pointer<()>
   data-type: int
-  adler: koka-uLong
-  reserved: koka-uLong
+  adler: koka-ulong
+  reserved: koka-ulong
 
 pub type z-stream-s-c
+pub alias z-stream-sp = c-pointer<z-stream-s-c>
 pub alias z-stream-sc = owned-c<z-stream-s-c>
 pub alias z-stream-scb<s::S> = borrowed-c<s,z-stream-s-c>
-pub alias z-stream-sca = owned-c<c-array<z-stream-s>>
+pub alias z-stream-sca = owned-c<c-array<z-stream-s-c>>
 
 pub extern z-stream-s/size-of(c: c-null<z-stream-s-c>): int32
   c inline "sizeof(struct z_stream_s)"
@@ -640,449 +532,459 @@ pub fun z-stream-sc-array(n: int): z-stream-sca
 pub fun z-stream-sc-array-calloc(n: int): z-stream-sca
   malloc-c(n.int32, ?size-of=z-stream-s/size-of)
 
-pub inline extern z-stream-s-ptr/next-in(s: intptr_t): intptr_t
+pub inline extern z-stream-s-ptrraw/next-in(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->next_in)"
 
-pub inline fun z-stream-sc/next-in(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/next-in)
+pub inline fun z-stream-sp/next-in(s: z-stream-sp): c-pointer<int8>
+  C-pointer(s.ptr.next-in)
 
-pub inline fun z-stream-scb/next-in(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/next-in)
+pub inline fun z-stream-sc/next-in(^s: z-stream-sc): c-pointer<int8>
+  s.with-ptr(z-stream-sp/next-in)
 
-pub inline extern z-stream-s-ptr/set-next-in(s: intptr_t, next-in: intptr_t): ()
-  c inline "((struct z_stream_s*)#1)->next_in = (Bytef*)#2"
+pub inline fun z-stream-scb/next-in(^s: z-stream-scb<s::S>): c-pointer<int8>
+  s.with-ptr(z-stream-sp/next-in)
 
-pub inline fun z-stream-sc/set-next-in(^s: z-stream-sc, next-in: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-in(next-in))
+pub inline extern z-stream-s-ptrraw/set-next-in(s: intptr_t, next-in: intptr_t): ()
+  c inline "((struct z_stream_s*)#1)->next_in = (unsigned char*)#2"
 
-pub inline fun z-stream-scb/set-next-in(^s: z-stream-scb<s::S>, next-in: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-in(next-in))
+pub inline fun z-stream-sp/set-next-in(s: z-stream-sp, next-in: c-pointer<int8>): ()
+  s.ptr.set-next-in(next-in.ptr)
 
-pub inline fun z-stream-sc-wrapper/next-in(^s: z-stream-sc): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/next-in).c-own
+pub inline fun z-stream-sc/set-next-in(^s: z-stream-sc, next-in: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-next-in(next-in))
 
-pub inline fun z-stream-scb-wrapper/next-in(^s: z-stream-scb<s::S>): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/next-in).c-own
+pub inline fun z-stream-scb/set-next-in(^s: z-stream-scb<s::S>, next-in: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-next-in(next-in))
 
-pub inline fun z-stream-sc-wrapper/set-next-in(^s: z-stream-sc, next-in: owned-c<int8>): ()
-  with koka-ptr <- next-in.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-in(koka-ptr))
+pub inline extern z-stream-s-ptrraw/avail-in(s: intptr_t): int32
+  c inline "(unsigned int)(((struct z_stream_s*)#1)->avail_in)"
 
-pub inline fun z-stream-scb-wrapper/set-next-in(^s: z-stream-scb<s::S>, next-in: owned-c<int8>): ()
-  with koka-ptr <- next-in.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-in(koka-ptr))
-
-pub inline extern z-stream-s-ptr/avail-in(s: intptr_t): int32
-  c inline "(uInt)(((struct z_stream_s*)#1)->avail_in)"
+pub inline fun z-stream-sp/avail-in(s: z-stream-sp): int32
+  s.ptr.avail-in
 
 pub inline fun z-stream-sc/avail-in(^s: z-stream-sc): int32
-  s.with-ptr(z-stream-s-ptr/avail-in)
+  s.with-ptr(z-stream-sp/avail-in)
 
 pub inline fun z-stream-scb/avail-in(^s: z-stream-scb<s::S>): int32
-  s.with-ptr(z-stream-s-ptr/avail-in)
+  s.with-ptr(z-stream-sp/avail-in)
 
-pub inline extern z-stream-s-ptr/set-avail-in(s: intptr_t, avail-in: int32): ()
-  c inline "((struct z_stream_s*)#1)->avail_in = (uInt)#2"
+pub inline extern z-stream-s-ptrraw/set-avail-in(s: intptr_t, avail-in: int32): ()
+  c inline "((struct z_stream_s*)#1)->avail_in = (unsigned int)#2"
+
+pub inline fun z-stream-sp/set-avail-in(s: z-stream-sp, avail-in: int32): ()
+  s.ptr.set-avail-in(avail-in)
 
 pub inline fun z-stream-sc/set-avail-in(^s: z-stream-sc, avail-in: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-in(avail-in))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-in(avail-in))
 
 pub inline fun z-stream-scb/set-avail-in(^s: z-stream-scb<s::S>, avail-in: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-in(avail-in))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-in(avail-in))
 
-pub inline fun z-stream-sc-wrapper/avail-in(^s: z-stream-sc): koka-uInt
-  s.with-ptr(z-stream-s-ptr/avail-in).int
+pub inline fun z-stream-sc-wrapper/avail-in(^s: z-stream-sc): koka-uint
+  s.with-ptr(z-stream-sp/avail-in).int
 
-pub inline fun z-stream-scb-wrapper/avail-in(^s: z-stream-scb<s::S>): koka-uInt
-  s.with-ptr(z-stream-s-ptr/avail-in).int
+pub inline fun z-stream-scb-wrapper/avail-in(^s: z-stream-scb<s::S>): koka-uint
+  s.with-ptr(z-stream-sp/avail-in).int
 
-pub inline fun z-stream-sc-wrapper/set-avail-in(^s: z-stream-sc, avail-in: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-in(avail-in.int32))
+pub inline fun z-stream-sc-wrapper/set-avail-in(^s: z-stream-sc, avail-in: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-in(avail-in.int32))
 
-pub inline fun z-stream-scb-wrapper/set-avail-in(^s: z-stream-scb<s::S>, avail-in: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-in(avail-in.int32))
+pub inline fun z-stream-scb-wrapper/set-avail-in(^s: z-stream-scb<s::S>, avail-in: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-in(avail-in.int32))
 
-pub inline extern z-stream-s-ptr/total-in(s: intptr_t): int64
-  c inline "(uLong)(((struct z_stream_s*)#1)->total_in)"
+pub inline extern z-stream-s-ptrraw/total-in(s: intptr_t): int64
+  c inline "(unsigned long)(((struct z_stream_s*)#1)->total_in)"
+
+pub inline fun z-stream-sp/total-in(s: z-stream-sp): int64
+  s.ptr.total-in
 
 pub inline fun z-stream-sc/total-in(^s: z-stream-sc): int64
-  s.with-ptr(z-stream-s-ptr/total-in)
+  s.with-ptr(z-stream-sp/total-in)
 
 pub inline fun z-stream-scb/total-in(^s: z-stream-scb<s::S>): int64
-  s.with-ptr(z-stream-s-ptr/total-in)
+  s.with-ptr(z-stream-sp/total-in)
 
-pub inline extern z-stream-s-ptr/set-total-in(s: intptr_t, total-in: int64): ()
-  c inline "((struct z_stream_s*)#1)->total_in = (uLong)#2"
+pub inline extern z-stream-s-ptrraw/set-total-in(s: intptr_t, total-in: int64): ()
+  c inline "((struct z_stream_s*)#1)->total_in = (unsigned long)#2"
+
+pub inline fun z-stream-sp/set-total-in(s: z-stream-sp, total-in: int64): ()
+  s.ptr.set-total-in(total-in)
 
 pub inline fun z-stream-sc/set-total-in(^s: z-stream-sc, total-in: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-in(total-in))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-in(total-in))
 
 pub inline fun z-stream-scb/set-total-in(^s: z-stream-scb<s::S>, total-in: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-in(total-in))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-in(total-in))
 
-pub inline fun z-stream-sc-wrapper/total-in(^s: z-stream-sc): koka-uLong
-  s.with-ptr(z-stream-s-ptr/total-in).int
+pub inline fun z-stream-sc-wrapper/total-in(^s: z-stream-sc): koka-ulong
+  s.with-ptr(z-stream-sp/total-in).int
 
-pub inline fun z-stream-scb-wrapper/total-in(^s: z-stream-scb<s::S>): koka-uLong
-  s.with-ptr(z-stream-s-ptr/total-in).int
+pub inline fun z-stream-scb-wrapper/total-in(^s: z-stream-scb<s::S>): koka-ulong
+  s.with-ptr(z-stream-sp/total-in).int
 
-pub inline fun z-stream-sc-wrapper/set-total-in(^s: z-stream-sc, total-in: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-in(total-in.int64))
+pub inline fun z-stream-sc-wrapper/set-total-in(^s: z-stream-sc, total-in: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-in(total-in.int64))
 
-pub inline fun z-stream-scb-wrapper/set-total-in(^s: z-stream-scb<s::S>, total-in: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-in(total-in.int64))
+pub inline fun z-stream-scb-wrapper/set-total-in(^s: z-stream-scb<s::S>, total-in: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-in(total-in.int64))
 
-pub inline extern z-stream-s-ptr/next-out(s: intptr_t): intptr_t
+pub inline extern z-stream-s-ptrraw/next-out(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->next_out)"
 
-pub inline fun z-stream-sc/next-out(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/next-out)
+pub inline fun z-stream-sp/next-out(s: z-stream-sp): c-pointer<int8>
+  C-pointer(s.ptr.next-out)
 
-pub inline fun z-stream-scb/next-out(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/next-out)
+pub inline fun z-stream-sc/next-out(^s: z-stream-sc): c-pointer<int8>
+  s.with-ptr(z-stream-sp/next-out)
 
-pub inline extern z-stream-s-ptr/set-next-out(s: intptr_t, next-out: intptr_t): ()
-  c inline "((struct z_stream_s*)#1)->next_out = (Bytef*)#2"
+pub inline fun z-stream-scb/next-out(^s: z-stream-scb<s::S>): c-pointer<int8>
+  s.with-ptr(z-stream-sp/next-out)
 
-pub inline fun z-stream-sc/set-next-out(^s: z-stream-sc, next-out: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-out(next-out))
+pub inline extern z-stream-s-ptrraw/set-next-out(s: intptr_t, next-out: intptr_t): ()
+  c inline "((struct z_stream_s*)#1)->next_out = (unsigned char*)#2"
 
-pub inline fun z-stream-scb/set-next-out(^s: z-stream-scb<s::S>, next-out: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-out(next-out))
+pub inline fun z-stream-sp/set-next-out(s: z-stream-sp, next-out: c-pointer<int8>): ()
+  s.ptr.set-next-out(next-out.ptr)
 
-pub inline fun z-stream-sc-wrapper/next-out(^s: z-stream-sc): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/next-out).c-own
+pub inline fun z-stream-sc/set-next-out(^s: z-stream-sc, next-out: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-next-out(next-out))
 
-pub inline fun z-stream-scb-wrapper/next-out(^s: z-stream-scb<s::S>): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/next-out).c-own
+pub inline fun z-stream-scb/set-next-out(^s: z-stream-scb<s::S>, next-out: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-next-out(next-out))
 
-pub inline fun z-stream-sc-wrapper/set-next-out(^s: z-stream-sc, next-out: owned-c<int8>): ()
-  with koka-ptr <- next-out.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-out(koka-ptr))
+pub inline extern z-stream-s-ptrraw/avail-out(s: intptr_t): int32
+  c inline "(unsigned int)(((struct z_stream_s*)#1)->avail_out)"
 
-pub inline fun z-stream-scb-wrapper/set-next-out(^s: z-stream-scb<s::S>, next-out: owned-c<int8>): ()
-  with koka-ptr <- next-out.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-next-out(koka-ptr))
-
-pub inline extern z-stream-s-ptr/avail-out(s: intptr_t): int32
-  c inline "(uInt)(((struct z_stream_s*)#1)->avail_out)"
+pub inline fun z-stream-sp/avail-out(s: z-stream-sp): int32
+  s.ptr.avail-out
 
 pub inline fun z-stream-sc/avail-out(^s: z-stream-sc): int32
-  s.with-ptr(z-stream-s-ptr/avail-out)
+  s.with-ptr(z-stream-sp/avail-out)
 
 pub inline fun z-stream-scb/avail-out(^s: z-stream-scb<s::S>): int32
-  s.with-ptr(z-stream-s-ptr/avail-out)
+  s.with-ptr(z-stream-sp/avail-out)
 
-pub inline extern z-stream-s-ptr/set-avail-out(s: intptr_t, avail-out: int32): ()
-  c inline "((struct z_stream_s*)#1)->avail_out = (uInt)#2"
+pub inline extern z-stream-s-ptrraw/set-avail-out(s: intptr_t, avail-out: int32): ()
+  c inline "((struct z_stream_s*)#1)->avail_out = (unsigned int)#2"
+
+pub inline fun z-stream-sp/set-avail-out(s: z-stream-sp, avail-out: int32): ()
+  s.ptr.set-avail-out(avail-out)
 
 pub inline fun z-stream-sc/set-avail-out(^s: z-stream-sc, avail-out: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-out(avail-out))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-out(avail-out))
 
 pub inline fun z-stream-scb/set-avail-out(^s: z-stream-scb<s::S>, avail-out: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-out(avail-out))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-out(avail-out))
 
-pub inline fun z-stream-sc-wrapper/avail-out(^s: z-stream-sc): koka-uInt
-  s.with-ptr(z-stream-s-ptr/avail-out).int
+pub inline fun z-stream-sc-wrapper/avail-out(^s: z-stream-sc): koka-uint
+  s.with-ptr(z-stream-sp/avail-out).int
 
-pub inline fun z-stream-scb-wrapper/avail-out(^s: z-stream-scb<s::S>): koka-uInt
-  s.with-ptr(z-stream-s-ptr/avail-out).int
+pub inline fun z-stream-scb-wrapper/avail-out(^s: z-stream-scb<s::S>): koka-uint
+  s.with-ptr(z-stream-sp/avail-out).int
 
-pub inline fun z-stream-sc-wrapper/set-avail-out(^s: z-stream-sc, avail-out: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-out(avail-out.int32))
+pub inline fun z-stream-sc-wrapper/set-avail-out(^s: z-stream-sc, avail-out: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-out(avail-out.int32))
 
-pub inline fun z-stream-scb-wrapper/set-avail-out(^s: z-stream-scb<s::S>, avail-out: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-avail-out(avail-out.int32))
+pub inline fun z-stream-scb-wrapper/set-avail-out(^s: z-stream-scb<s::S>, avail-out: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-avail-out(avail-out.int32))
 
-pub inline extern z-stream-s-ptr/total-out(s: intptr_t): int64
-  c inline "(uLong)(((struct z_stream_s*)#1)->total_out)"
+pub inline extern z-stream-s-ptrraw/total-out(s: intptr_t): int64
+  c inline "(unsigned long)(((struct z_stream_s*)#1)->total_out)"
+
+pub inline fun z-stream-sp/total-out(s: z-stream-sp): int64
+  s.ptr.total-out
 
 pub inline fun z-stream-sc/total-out(^s: z-stream-sc): int64
-  s.with-ptr(z-stream-s-ptr/total-out)
+  s.with-ptr(z-stream-sp/total-out)
 
 pub inline fun z-stream-scb/total-out(^s: z-stream-scb<s::S>): int64
-  s.with-ptr(z-stream-s-ptr/total-out)
+  s.with-ptr(z-stream-sp/total-out)
 
-pub inline extern z-stream-s-ptr/set-total-out(s: intptr_t, total-out: int64): ()
-  c inline "((struct z_stream_s*)#1)->total_out = (uLong)#2"
+pub inline extern z-stream-s-ptrraw/set-total-out(s: intptr_t, total-out: int64): ()
+  c inline "((struct z_stream_s*)#1)->total_out = (unsigned long)#2"
+
+pub inline fun z-stream-sp/set-total-out(s: z-stream-sp, total-out: int64): ()
+  s.ptr.set-total-out(total-out)
 
 pub inline fun z-stream-sc/set-total-out(^s: z-stream-sc, total-out: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-out(total-out))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-out(total-out))
 
 pub inline fun z-stream-scb/set-total-out(^s: z-stream-scb<s::S>, total-out: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-out(total-out))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-out(total-out))
 
-pub inline fun z-stream-sc-wrapper/total-out(^s: z-stream-sc): koka-uLong
-  s.with-ptr(z-stream-s-ptr/total-out).int
+pub inline fun z-stream-sc-wrapper/total-out(^s: z-stream-sc): koka-ulong
+  s.with-ptr(z-stream-sp/total-out).int
 
-pub inline fun z-stream-scb-wrapper/total-out(^s: z-stream-scb<s::S>): koka-uLong
-  s.with-ptr(z-stream-s-ptr/total-out).int
+pub inline fun z-stream-scb-wrapper/total-out(^s: z-stream-scb<s::S>): koka-ulong
+  s.with-ptr(z-stream-sp/total-out).int
 
-pub inline fun z-stream-sc-wrapper/set-total-out(^s: z-stream-sc, total-out: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-out(total-out.int64))
+pub inline fun z-stream-sc-wrapper/set-total-out(^s: z-stream-sc, total-out: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-out(total-out.int64))
 
-pub inline fun z-stream-scb-wrapper/set-total-out(^s: z-stream-scb<s::S>, total-out: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-total-out(total-out.int64))
+pub inline fun z-stream-scb-wrapper/set-total-out(^s: z-stream-scb<s::S>, total-out: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-total-out(total-out.int64))
 
-pub inline extern z-stream-s-ptr/msg(s: intptr_t): intptr_t
+pub inline extern z-stream-s-ptrraw/msg(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->msg)"
 
-pub inline fun z-stream-sc/msg(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/msg)
+pub inline fun z-stream-sp/msg(s: z-stream-sp): c-pointer<int8>
+  C-pointer(s.ptr.msg)
 
-pub inline fun z-stream-scb/msg(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/msg)
+pub inline fun z-stream-sc/msg(^s: z-stream-sc): c-pointer<int8>
+  s.with-ptr(z-stream-sp/msg)
 
-pub inline extern z-stream-s-ptr/set-msg(s: intptr_t, msg: intptr_t): ()
+pub inline fun z-stream-scb/msg(^s: z-stream-scb<s::S>): c-pointer<int8>
+  s.with-ptr(z-stream-sp/msg)
+
+pub inline extern z-stream-s-ptrraw/set-msg(s: intptr_t, msg: intptr_t): ()
   c inline "((struct z_stream_s*)#1)->msg = (char*)#2"
 
-pub inline fun z-stream-sc/set-msg(^s: z-stream-sc, msg: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-msg(msg))
+pub inline fun z-stream-sp/set-msg(s: z-stream-sp, msg: c-pointer<int8>): ()
+  s.ptr.set-msg(msg.ptr)
 
-pub inline fun z-stream-scb/set-msg(^s: z-stream-scb<s::S>, msg: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-msg(msg))
+pub inline fun z-stream-sc/set-msg(^s: z-stream-sc, msg: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-msg(msg))
 
-pub inline fun z-stream-sc-wrapper/msg(^s: z-stream-sc): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/msg).c-own
+pub inline fun z-stream-scb/set-msg(^s: z-stream-scb<s::S>, msg: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-msg(msg))
 
-pub inline fun z-stream-scb-wrapper/msg(^s: z-stream-scb<s::S>): owned-c<int8>
-  s.with-ptr(z-stream-s-ptr/msg).c-own
-
-pub inline fun z-stream-sc-wrapper/set-msg(^s: z-stream-sc, msg: owned-c<int8>): ()
-  with koka-ptr <- msg.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-msg(koka-ptr))
-
-pub inline fun z-stream-scb-wrapper/set-msg(^s: z-stream-scb<s::S>, msg: owned-c<int8>): ()
-  with koka-ptr <- msg.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-msg(koka-ptr))
-
-pub inline extern z-stream-s-ptr/state(s: intptr_t): intptr_t
+pub inline extern z-stream-s-ptrraw/state(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->state)"
 
-pub inline fun z-stream-sc/state(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/state)
+pub inline fun z-stream-sp/state(s: z-stream-sp): c-pointer<internal-state-c>
+  C-pointer(s.ptr.state)
 
-pub inline fun z-stream-scb/state(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/state)
+pub inline fun z-stream-sc/state(^s: z-stream-sc): c-pointer<internal-state-c>
+  s.with-ptr(z-stream-sp/state)
 
-pub inline extern z-stream-s-ptr/set-state(s: intptr_t, state: intptr_t): ()
+pub inline fun z-stream-scb/state(^s: z-stream-scb<s::S>): c-pointer<internal-state-c>
+  s.with-ptr(z-stream-sp/state)
+
+pub inline extern z-stream-s-ptrraw/set-state(s: intptr_t, state: intptr_t): ()
   c inline "((struct z_stream_s*)#1)->state = (struct internal_state*)#2"
 
-pub inline fun z-stream-sc/set-state(^s: z-stream-sc, state: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-state(state))
+pub inline fun z-stream-sp/set-state(s: z-stream-sp, state: c-pointer<internal-state-c>): ()
+  s.ptr.set-state(state.ptr)
 
-pub inline fun z-stream-scb/set-state(^s: z-stream-scb<s::S>, state: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-state(state))
+pub inline fun z-stream-sc/set-state(^s: z-stream-sc, state: c-pointer<internal-state-c>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-state(state))
 
-pub inline fun z-stream-sc-wrapper/state(^s: z-stream-sc): owned-c<internal-state-c>
-  s.with-ptr(z-stream-s-ptr/state).c-own
+pub inline fun z-stream-scb/set-state(^s: z-stream-scb<s::S>, state: c-pointer<internal-state-c>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-state(state))
 
-pub inline fun z-stream-scb-wrapper/state(^s: z-stream-scb<s::S>): owned-c<internal-state-c>
-  s.with-ptr(z-stream-s-ptr/state).c-own
-
-pub inline fun z-stream-sc-wrapper/set-state(^s: z-stream-sc, state: owned-c<internal-state-c>): ()
-  with koka-ptr <- state.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-state(koka-ptr))
-
-pub inline fun z-stream-scb-wrapper/set-state(^s: z-stream-scb<s::S>, state: owned-c<internal-state-c>): ()
-  with koka-ptr <- state.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-state(koka-ptr))
-
-pub inline extern z-stream-s-ptr/zalloc(s: intptr_t): intptr_t
+pub inline extern z-stream-s-ptrraw/zalloc(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->zalloc)"
 
-pub inline fun z-stream-sc/zalloc(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/zalloc)
+pub inline fun z-stream-sp/zalloc(s: z-stream-sp): c-pointer<intptr_t>
+  C-pointer(s.ptr.zalloc)
 
-pub inline fun z-stream-scb/zalloc(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/zalloc)
+pub inline fun z-stream-sc/zalloc(^s: z-stream-sc): c-pointer<intptr_t>
+  s.with-ptr(z-stream-sp/zalloc)
 
-pub inline extern z-stream-s-ptr/set-zalloc(s: intptr_t, zalloc: intptr_t): ()
-  c inline "((struct z_stream_s*)#1)->zalloc = (alloc_func)#2"
+pub inline fun z-stream-scb/zalloc(^s: z-stream-scb<s::S>): c-pointer<intptr_t>
+  s.with-ptr(z-stream-sp/zalloc)
 
-pub inline fun z-stream-sc/set-zalloc(^s: z-stream-sc, zalloc: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-zalloc(zalloc))
+pub inline extern z-stream-s-ptrraw/set-zalloc(s: intptr_t, zalloc: intptr_t): ()
+  c inline "((struct z_stream_s*)#1)->zalloc = (void* (*)(void*, unsigned int, unsigned int))#2"
 
-pub inline fun z-stream-scb/set-zalloc(^s: z-stream-scb<s::S>, zalloc: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-zalloc(zalloc))
+pub inline fun z-stream-sp/set-zalloc(s: z-stream-sp, zalloc: c-pointer<intptr_t>): ()
+  s.ptr.set-zalloc(zalloc.ptr)
 
-pub inline extern z-stream-s-ptr/zfree(s: intptr_t): intptr_t
+pub inline fun z-stream-sc/set-zalloc(^s: z-stream-sc, zalloc: c-pointer<intptr_t>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-zalloc(zalloc))
+
+pub inline fun z-stream-scb/set-zalloc(^s: z-stream-scb<s::S>, zalloc: c-pointer<intptr_t>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-zalloc(zalloc))
+
+pub inline extern z-stream-s-ptrraw/zfree(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->zfree)"
 
-pub inline fun z-stream-sc/zfree(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/zfree)
+pub inline fun z-stream-sp/zfree(s: z-stream-sp): c-pointer<intptr_t>
+  C-pointer(s.ptr.zfree)
 
-pub inline fun z-stream-scb/zfree(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/zfree)
+pub inline fun z-stream-sc/zfree(^s: z-stream-sc): c-pointer<intptr_t>
+  s.with-ptr(z-stream-sp/zfree)
 
-pub inline extern z-stream-s-ptr/set-zfree(s: intptr_t, zfree: intptr_t): ()
-  c inline "((struct z_stream_s*)#1)->zfree = (free_func)#2"
+pub inline fun z-stream-scb/zfree(^s: z-stream-scb<s::S>): c-pointer<intptr_t>
+  s.with-ptr(z-stream-sp/zfree)
 
-pub inline fun z-stream-sc/set-zfree(^s: z-stream-sc, zfree: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-zfree(zfree))
+pub inline extern z-stream-s-ptrraw/set-zfree(s: intptr_t, zfree: intptr_t): ()
+  c inline "((struct z_stream_s*)#1)->zfree = (void (*)(void*, void*))#2"
 
-pub inline fun z-stream-scb/set-zfree(^s: z-stream-scb<s::S>, zfree: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-zfree(zfree))
+pub inline fun z-stream-sp/set-zfree(s: z-stream-sp, zfree: c-pointer<intptr_t>): ()
+  s.ptr.set-zfree(zfree.ptr)
 
-pub inline extern z-stream-s-ptr/opaque(s: intptr_t): intptr_t
+pub inline fun z-stream-sc/set-zfree(^s: z-stream-sc, zfree: c-pointer<intptr_t>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-zfree(zfree))
+
+pub inline fun z-stream-scb/set-zfree(^s: z-stream-scb<s::S>, zfree: c-pointer<intptr_t>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-zfree(zfree))
+
+pub inline extern z-stream-s-ptrraw/opaque(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct z_stream_s*)#1)->opaque)"
 
-pub inline fun z-stream-sc/opaque(^s: z-stream-sc): intptr_t
-  s.with-ptr(z-stream-s-ptr/opaque)
+pub inline fun z-stream-sp/opaque(s: z-stream-sp): c-pointer<()>
+  C-pointer(s.ptr.opaque)
 
-pub inline fun z-stream-scb/opaque(^s: z-stream-scb<s::S>): intptr_t
-  s.with-ptr(z-stream-s-ptr/opaque)
+pub inline fun z-stream-sc/opaque(^s: z-stream-sc): c-pointer<()>
+  s.with-ptr(z-stream-sp/opaque)
 
-pub inline extern z-stream-s-ptr/set-opaque(s: intptr_t, opaque: intptr_t): ()
-  c inline "((struct z_stream_s*)#1)->opaque = (voidpf)#2"
+pub inline fun z-stream-scb/opaque(^s: z-stream-scb<s::S>): c-pointer<()>
+  s.with-ptr(z-stream-sp/opaque)
 
-pub inline fun z-stream-sc/set-opaque(^s: z-stream-sc, opaque: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-opaque(opaque))
+pub inline extern z-stream-s-ptrraw/set-opaque(s: intptr_t, opaque: intptr_t): ()
+  c inline "((struct z_stream_s*)#1)->opaque = (void*)#2"
 
-pub inline fun z-stream-scb/set-opaque(^s: z-stream-scb<s::S>, opaque: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-opaque(opaque))
+pub inline fun z-stream-sp/set-opaque(s: z-stream-sp, opaque: c-pointer<()>): ()
+  s.ptr.set-opaque(opaque.ptr)
 
-pub inline fun z-stream-sc-wrapper/opaque(^s: z-stream-sc): koka-voidpf
-  s.with-ptr(z-stream-s-ptr/opaque).c-own
+pub inline fun z-stream-sc/set-opaque(^s: z-stream-sc, opaque: c-pointer<()>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-opaque(opaque))
 
-pub inline fun z-stream-scb-wrapper/opaque(^s: z-stream-scb<s::S>): koka-voidpf
-  s.with-ptr(z-stream-s-ptr/opaque).c-own
+pub inline fun z-stream-scb/set-opaque(^s: z-stream-scb<s::S>, opaque: c-pointer<()>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-opaque(opaque))
 
-pub inline fun z-stream-sc-wrapper/set-opaque(^s: z-stream-sc, opaque: koka-voidpf): ()
-  with koka-ptr <- opaque.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-opaque(koka-ptr))
-
-pub inline fun z-stream-scb-wrapper/set-opaque(^s: z-stream-scb<s::S>, opaque: koka-voidpf): ()
-  with koka-ptr <- opaque.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-opaque(koka-ptr))
-
-pub inline extern z-stream-s-ptr/data-type(s: intptr_t): int32
+pub inline extern z-stream-s-ptrraw/data-type(s: intptr_t): int32
   c inline "(int)(((struct z_stream_s*)#1)->data_type)"
 
+pub inline fun z-stream-sp/data-type(s: z-stream-sp): int32
+  s.ptr.data-type
+
 pub inline fun z-stream-sc/data-type(^s: z-stream-sc): int32
-  s.with-ptr(z-stream-s-ptr/data-type)
+  s.with-ptr(z-stream-sp/data-type)
 
 pub inline fun z-stream-scb/data-type(^s: z-stream-scb<s::S>): int32
-  s.with-ptr(z-stream-s-ptr/data-type)
+  s.with-ptr(z-stream-sp/data-type)
 
-pub inline extern z-stream-s-ptr/set-data-type(s: intptr_t, data-type: int32): ()
+pub inline extern z-stream-s-ptrraw/set-data-type(s: intptr_t, data-type: int32): ()
   c inline "((struct z_stream_s*)#1)->data_type = (int)#2"
 
+pub inline fun z-stream-sp/set-data-type(s: z-stream-sp, data-type: int32): ()
+  s.ptr.set-data-type(data-type)
+
 pub inline fun z-stream-sc/set-data-type(^s: z-stream-sc, data-type: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-data-type(data-type))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-data-type(data-type))
 
 pub inline fun z-stream-scb/set-data-type(^s: z-stream-scb<s::S>, data-type: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-data-type(data-type))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-data-type(data-type))
 
 pub inline fun z-stream-sc-wrapper/data-type(^s: z-stream-sc): int
-  s.with-ptr(z-stream-s-ptr/data-type).int
+  s.with-ptr(z-stream-sp/data-type).int
 
 pub inline fun z-stream-scb-wrapper/data-type(^s: z-stream-scb<s::S>): int
-  s.with-ptr(z-stream-s-ptr/data-type).int
+  s.with-ptr(z-stream-sp/data-type).int
 
 pub inline fun z-stream-sc-wrapper/set-data-type(^s: z-stream-sc, data-type: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-data-type(data-type.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-data-type(data-type.int32))
 
 pub inline fun z-stream-scb-wrapper/set-data-type(^s: z-stream-scb<s::S>, data-type: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-data-type(data-type.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-data-type(data-type.int32))
 
-pub inline extern z-stream-s-ptr/adler(s: intptr_t): int64
-  c inline "(uLong)(((struct z_stream_s*)#1)->adler)"
+pub inline extern z-stream-s-ptrraw/adler(s: intptr_t): int64
+  c inline "(unsigned long)(((struct z_stream_s*)#1)->adler)"
+
+pub inline fun z-stream-sp/adler(s: z-stream-sp): int64
+  s.ptr.adler
 
 pub inline fun z-stream-sc/adler(^s: z-stream-sc): int64
-  s.with-ptr(z-stream-s-ptr/adler)
+  s.with-ptr(z-stream-sp/adler)
 
 pub inline fun z-stream-scb/adler(^s: z-stream-scb<s::S>): int64
-  s.with-ptr(z-stream-s-ptr/adler)
+  s.with-ptr(z-stream-sp/adler)
 
-pub inline extern z-stream-s-ptr/set-adler(s: intptr_t, adler: int64): ()
-  c inline "((struct z_stream_s*)#1)->adler = (uLong)#2"
+pub inline extern z-stream-s-ptrraw/set-adler(s: intptr_t, adler: int64): ()
+  c inline "((struct z_stream_s*)#1)->adler = (unsigned long)#2"
+
+pub inline fun z-stream-sp/set-adler(s: z-stream-sp, adler: int64): ()
+  s.ptr.set-adler(adler)
 
 pub inline fun z-stream-sc/set-adler(^s: z-stream-sc, adler: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-adler(adler))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-adler(adler))
 
 pub inline fun z-stream-scb/set-adler(^s: z-stream-scb<s::S>, adler: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-adler(adler))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-adler(adler))
 
-pub inline fun z-stream-sc-wrapper/adler(^s: z-stream-sc): koka-uLong
-  s.with-ptr(z-stream-s-ptr/adler).int
+pub inline fun z-stream-sc-wrapper/adler(^s: z-stream-sc): koka-ulong
+  s.with-ptr(z-stream-sp/adler).int
 
-pub inline fun z-stream-scb-wrapper/adler(^s: z-stream-scb<s::S>): koka-uLong
-  s.with-ptr(z-stream-s-ptr/adler).int
+pub inline fun z-stream-scb-wrapper/adler(^s: z-stream-scb<s::S>): koka-ulong
+  s.with-ptr(z-stream-sp/adler).int
 
-pub inline fun z-stream-sc-wrapper/set-adler(^s: z-stream-sc, adler: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-adler(adler.int64))
+pub inline fun z-stream-sc-wrapper/set-adler(^s: z-stream-sc, adler: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-adler(adler.int64))
 
-pub inline fun z-stream-scb-wrapper/set-adler(^s: z-stream-scb<s::S>, adler: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-adler(adler.int64))
+pub inline fun z-stream-scb-wrapper/set-adler(^s: z-stream-scb<s::S>, adler: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-adler(adler.int64))
 
-pub inline extern z-stream-s-ptr/reserved(s: intptr_t): int64
-  c inline "(uLong)(((struct z_stream_s*)#1)->reserved)"
+pub inline extern z-stream-s-ptrraw/reserved(s: intptr_t): int64
+  c inline "(unsigned long)(((struct z_stream_s*)#1)->reserved)"
+
+pub inline fun z-stream-sp/reserved(s: z-stream-sp): int64
+  s.ptr.reserved
 
 pub inline fun z-stream-sc/reserved(^s: z-stream-sc): int64
-  s.with-ptr(z-stream-s-ptr/reserved)
+  s.with-ptr(z-stream-sp/reserved)
 
 pub inline fun z-stream-scb/reserved(^s: z-stream-scb<s::S>): int64
-  s.with-ptr(z-stream-s-ptr/reserved)
+  s.with-ptr(z-stream-sp/reserved)
 
-pub inline extern z-stream-s-ptr/set-reserved(s: intptr_t, reserved: int64): ()
-  c inline "((struct z_stream_s*)#1)->reserved = (uLong)#2"
+pub inline extern z-stream-s-ptrraw/set-reserved(s: intptr_t, reserved: int64): ()
+  c inline "((struct z_stream_s*)#1)->reserved = (unsigned long)#2"
+
+pub inline fun z-stream-sp/set-reserved(s: z-stream-sp, reserved: int64): ()
+  s.ptr.set-reserved(reserved)
 
 pub inline fun z-stream-sc/set-reserved(^s: z-stream-sc, reserved: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-reserved(reserved))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-reserved(reserved))
 
 pub inline fun z-stream-scb/set-reserved(^s: z-stream-scb<s::S>, reserved: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-reserved(reserved))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-reserved(reserved))
 
-pub inline fun z-stream-sc-wrapper/reserved(^s: z-stream-sc): koka-uLong
-  s.with-ptr(z-stream-s-ptr/reserved).int
+pub inline fun z-stream-sc-wrapper/reserved(^s: z-stream-sc): koka-ulong
+  s.with-ptr(z-stream-sp/reserved).int
 
-pub inline fun z-stream-scb-wrapper/reserved(^s: z-stream-scb<s::S>): koka-uLong
-  s.with-ptr(z-stream-s-ptr/reserved).int
+pub inline fun z-stream-scb-wrapper/reserved(^s: z-stream-scb<s::S>): koka-ulong
+  s.with-ptr(z-stream-sp/reserved).int
 
-pub inline fun z-stream-sc-wrapper/set-reserved(^s: z-stream-sc, reserved: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-reserved(reserved.int64))
+pub inline fun z-stream-sc-wrapper/set-reserved(^s: z-stream-sc, reserved: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-reserved(reserved.int64))
 
-pub inline fun z-stream-scb-wrapper/set-reserved(^s: z-stream-scb<s::S>, reserved: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-s-ptr/set-reserved(reserved.int64))
-
-pub fun z-stream-s/to-koka(s: z-stream-sc): z-stream-s
-  Z-stream-s(s.z-stream-sc/next-in.c-own, s.z-stream-sc/avail-in.int, s.z-stream-sc/total-in.int, s.z-stream-sc/next-out.c-own, s.z-stream-sc/avail-out.int, s.z-stream-sc/total-out.int, s.z-stream-sc/msg.c-own, s.z-stream-sc/state.c-own.to-koka, s.z-stream-sc/zalloc, s.z-stream-sc/zfree, s.z-stream-sc/opaque.c-own, s.z-stream-sc/data-type.int, s.z-stream-sc/adler.int, s.z-stream-sc/reserved.int)
+pub inline fun z-stream-scb-wrapper/set-reserved(^s: z-stream-scb<s::S>, reserved: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.z-stream-sp/set-reserved(reserved.int64))
 
 alias bytef = int8
 alias byte = int8
-alias koka-Byte = int
+alias koka-byte = int
 alias uint = int32
-alias koka-uInt = int
+alias koka-uint = int
 alias ulong = int64
-alias koka-uLong = int
-alias alloc-func = intptr_t
-alias alloc-funcfn = ((opaque : intptr_t, items : int32, size : int32) -> intptr_t)
-alias koka-alloc_funcfn = ((opaque : koka-voidpf, items : koka-uInt, size : koka-uInt) -> koka-voidpf)
-alias voidpf = intptr_t
-alias koka-voidpf = owned-c<()>
-alias free-func = intptr_t
-alias free-funcfn = ((opaque : intptr_t, address : intptr_t) -> ())
-alias koka-free_funcfn = ((opaque : koka-voidpf, address : koka-voidpf) -> ())
+alias koka-ulong = int
+alias alloc-func = c-pointer<intptr_t>
+alias alloc-funcfn = ((opaque : c-pointer<()>, items : int32, size : int32) -> c-pointer<()>)
+alias koka-alloc-funcfn = ((opaque : c-pointer<()>, items : koka-uint, size : koka-uint) -> c-pointer<()>)
+alias voidpf = c-pointer<()>
+alias free-func = c-pointer<intptr_t>
+alias free-funcfn = ((opaque : c-pointer<()>, address : c-pointer<()>) -> ())
 pub struct gz-header-s
   text: int
-  time: koka-uLong
+  time: koka-ulong
   xflags: int
   os: int
-  extra: owned-c<int8>
-  extra-len: koka-uInt
-  extra-max: koka-uInt
-  name: owned-c<int8>
-  name-max: koka-uInt
-  comment: owned-c<int8>
-  comm-max: koka-uInt
+  extra: c-pointer<int8>
+  extra-len: koka-uint
+  extra-max: koka-uint
+  name: c-pointer<int8>
+  name-max: koka-uint
+  comment: c-pointer<int8>
+  comm-max: koka-uint
   hcrc: int
   done: int
 
 pub type gz-header-s-c
+pub alias gz-header-sp = c-pointer<gz-header-s-c>
 pub alias gz-header-sc = owned-c<gz-header-s-c>
 pub alias gz-header-scb<s::S> = borrowed-c<s,gz-header-s-c>
-pub alias gz-header-sca = owned-c<c-array<gz-header-s>>
+pub alias gz-header-sca = owned-c<c-array<gz-header-s-c>>
 
 pub extern gz-header-s/size-of(c: c-null<gz-header-s-c>): int32
   c inline "sizeof(struct gz_header_s)"
@@ -1099,429 +1001,461 @@ pub fun gz-header-sc-array(n: int): gz-header-sca
 pub fun gz-header-sc-array-calloc(n: int): gz-header-sca
   malloc-c(n.int32, ?size-of=gz-header-s/size-of)
 
-pub inline extern gz-header-s-ptr/text(s: intptr_t): int32
+pub inline extern gz-header-s-ptrraw/text(s: intptr_t): int32
   c inline "(int)(((struct gz_header_s*)#1)->text)"
 
+pub inline fun gz-header-sp/text(s: gz-header-sp): int32
+  s.ptr.text
+
 pub inline fun gz-header-sc/text(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/text)
+  s.with-ptr(gz-header-sp/text)
 
 pub inline fun gz-header-scb/text(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/text)
+  s.with-ptr(gz-header-sp/text)
 
-pub inline extern gz-header-s-ptr/set-text(s: intptr_t, text: int32): ()
+pub inline extern gz-header-s-ptrraw/set-text(s: intptr_t, text: int32): ()
   c inline "((struct gz_header_s*)#1)->text = (int)#2"
 
+pub inline fun gz-header-sp/set-text(s: gz-header-sp, text: int32): ()
+  s.ptr.set-text(text)
+
 pub inline fun gz-header-sc/set-text(^s: gz-header-sc, text: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-text(text))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-text(text))
 
 pub inline fun gz-header-scb/set-text(^s: gz-header-scb<s::S>, text: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-text(text))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-text(text))
 
 pub inline fun gz-header-sc-wrapper/text(^s: gz-header-sc): int
-  s.with-ptr(gz-header-s-ptr/text).int
+  s.with-ptr(gz-header-sp/text).int
 
 pub inline fun gz-header-scb-wrapper/text(^s: gz-header-scb<s::S>): int
-  s.with-ptr(gz-header-s-ptr/text).int
+  s.with-ptr(gz-header-sp/text).int
 
 pub inline fun gz-header-sc-wrapper/set-text(^s: gz-header-sc, text: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-text(text.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-text(text.int32))
 
 pub inline fun gz-header-scb-wrapper/set-text(^s: gz-header-scb<s::S>, text: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-text(text.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-text(text.int32))
 
-pub inline extern gz-header-s-ptr/time(s: intptr_t): int64
-  c inline "(uLong)(((struct gz_header_s*)#1)->time)"
+pub inline extern gz-header-s-ptrraw/time(s: intptr_t): int64
+  c inline "(unsigned long)(((struct gz_header_s*)#1)->time)"
+
+pub inline fun gz-header-sp/time(s: gz-header-sp): int64
+  s.ptr.time
 
 pub inline fun gz-header-sc/time(^s: gz-header-sc): int64
-  s.with-ptr(gz-header-s-ptr/time)
+  s.with-ptr(gz-header-sp/time)
 
 pub inline fun gz-header-scb/time(^s: gz-header-scb<s::S>): int64
-  s.with-ptr(gz-header-s-ptr/time)
+  s.with-ptr(gz-header-sp/time)
 
-pub inline extern gz-header-s-ptr/set-time(s: intptr_t, time: int64): ()
-  c inline "((struct gz_header_s*)#1)->time = (uLong)#2"
+pub inline extern gz-header-s-ptrraw/set-time(s: intptr_t, time: int64): ()
+  c inline "((struct gz_header_s*)#1)->time = (unsigned long)#2"
+
+pub inline fun gz-header-sp/set-time(s: gz-header-sp, time: int64): ()
+  s.ptr.set-time(time)
 
 pub inline fun gz-header-sc/set-time(^s: gz-header-sc, time: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-time(time))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-time(time))
 
 pub inline fun gz-header-scb/set-time(^s: gz-header-scb<s::S>, time: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-time(time))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-time(time))
 
-pub inline fun gz-header-sc-wrapper/time(^s: gz-header-sc): koka-uLong
-  s.with-ptr(gz-header-s-ptr/time).int
+pub inline fun gz-header-sc-wrapper/time(^s: gz-header-sc): koka-ulong
+  s.with-ptr(gz-header-sp/time).int
 
-pub inline fun gz-header-scb-wrapper/time(^s: gz-header-scb<s::S>): koka-uLong
-  s.with-ptr(gz-header-s-ptr/time).int
+pub inline fun gz-header-scb-wrapper/time(^s: gz-header-scb<s::S>): koka-ulong
+  s.with-ptr(gz-header-sp/time).int
 
-pub inline fun gz-header-sc-wrapper/set-time(^s: gz-header-sc, time: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-time(time.int64))
+pub inline fun gz-header-sc-wrapper/set-time(^s: gz-header-sc, time: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-time(time.int64))
 
-pub inline fun gz-header-scb-wrapper/set-time(^s: gz-header-scb<s::S>, time: koka-uLong): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-time(time.int64))
+pub inline fun gz-header-scb-wrapper/set-time(^s: gz-header-scb<s::S>, time: koka-ulong): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-time(time.int64))
 
-pub inline extern gz-header-s-ptr/xflags(s: intptr_t): int32
+pub inline extern gz-header-s-ptrraw/xflags(s: intptr_t): int32
   c inline "(int)(((struct gz_header_s*)#1)->xflags)"
 
+pub inline fun gz-header-sp/xflags(s: gz-header-sp): int32
+  s.ptr.xflags
+
 pub inline fun gz-header-sc/xflags(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/xflags)
+  s.with-ptr(gz-header-sp/xflags)
 
 pub inline fun gz-header-scb/xflags(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/xflags)
+  s.with-ptr(gz-header-sp/xflags)
 
-pub inline extern gz-header-s-ptr/set-xflags(s: intptr_t, xflags: int32): ()
+pub inline extern gz-header-s-ptrraw/set-xflags(s: intptr_t, xflags: int32): ()
   c inline "((struct gz_header_s*)#1)->xflags = (int)#2"
 
+pub inline fun gz-header-sp/set-xflags(s: gz-header-sp, xflags: int32): ()
+  s.ptr.set-xflags(xflags)
+
 pub inline fun gz-header-sc/set-xflags(^s: gz-header-sc, xflags: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-xflags(xflags))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-xflags(xflags))
 
 pub inline fun gz-header-scb/set-xflags(^s: gz-header-scb<s::S>, xflags: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-xflags(xflags))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-xflags(xflags))
 
 pub inline fun gz-header-sc-wrapper/xflags(^s: gz-header-sc): int
-  s.with-ptr(gz-header-s-ptr/xflags).int
+  s.with-ptr(gz-header-sp/xflags).int
 
 pub inline fun gz-header-scb-wrapper/xflags(^s: gz-header-scb<s::S>): int
-  s.with-ptr(gz-header-s-ptr/xflags).int
+  s.with-ptr(gz-header-sp/xflags).int
 
 pub inline fun gz-header-sc-wrapper/set-xflags(^s: gz-header-sc, xflags: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-xflags(xflags.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-xflags(xflags.int32))
 
 pub inline fun gz-header-scb-wrapper/set-xflags(^s: gz-header-scb<s::S>, xflags: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-xflags(xflags.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-xflags(xflags.int32))
 
-pub inline extern gz-header-s-ptr/os(s: intptr_t): int32
+pub inline extern gz-header-s-ptrraw/os(s: intptr_t): int32
   c inline "(int)(((struct gz_header_s*)#1)->os)"
 
+pub inline fun gz-header-sp/os(s: gz-header-sp): int32
+  s.ptr.os
+
 pub inline fun gz-header-sc/os(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/os)
+  s.with-ptr(gz-header-sp/os)
 
 pub inline fun gz-header-scb/os(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/os)
+  s.with-ptr(gz-header-sp/os)
 
-pub inline extern gz-header-s-ptr/set-os(s: intptr_t, os: int32): ()
+pub inline extern gz-header-s-ptrraw/set-os(s: intptr_t, os: int32): ()
   c inline "((struct gz_header_s*)#1)->os = (int)#2"
 
+pub inline fun gz-header-sp/set-os(s: gz-header-sp, os: int32): ()
+  s.ptr.set-os(os)
+
 pub inline fun gz-header-sc/set-os(^s: gz-header-sc, os: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-os(os))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-os(os))
 
 pub inline fun gz-header-scb/set-os(^s: gz-header-scb<s::S>, os: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-os(os))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-os(os))
 
 pub inline fun gz-header-sc-wrapper/os(^s: gz-header-sc): int
-  s.with-ptr(gz-header-s-ptr/os).int
+  s.with-ptr(gz-header-sp/os).int
 
 pub inline fun gz-header-scb-wrapper/os(^s: gz-header-scb<s::S>): int
-  s.with-ptr(gz-header-s-ptr/os).int
+  s.with-ptr(gz-header-sp/os).int
 
 pub inline fun gz-header-sc-wrapper/set-os(^s: gz-header-sc, os: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-os(os.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-os(os.int32))
 
 pub inline fun gz-header-scb-wrapper/set-os(^s: gz-header-scb<s::S>, os: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-os(os.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-os(os.int32))
 
-pub inline extern gz-header-s-ptr/extra(s: intptr_t): intptr_t
+pub inline extern gz-header-s-ptrraw/extra(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct gz_header_s*)#1)->extra)"
 
-pub inline fun gz-header-sc/extra(^s: gz-header-sc): intptr_t
-  s.with-ptr(gz-header-s-ptr/extra)
+pub inline fun gz-header-sp/extra(s: gz-header-sp): c-pointer<int8>
+  C-pointer(s.ptr.extra)
 
-pub inline fun gz-header-scb/extra(^s: gz-header-scb<s::S>): intptr_t
-  s.with-ptr(gz-header-s-ptr/extra)
+pub inline fun gz-header-sc/extra(^s: gz-header-sc): c-pointer<int8>
+  s.with-ptr(gz-header-sp/extra)
 
-pub inline extern gz-header-s-ptr/set-extra(s: intptr_t, extra: intptr_t): ()
-  c inline "((struct gz_header_s*)#1)->extra = (Bytef*)#2"
+pub inline fun gz-header-scb/extra(^s: gz-header-scb<s::S>): c-pointer<int8>
+  s.with-ptr(gz-header-sp/extra)
 
-pub inline fun gz-header-sc/set-extra(^s: gz-header-sc, extra: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra(extra))
+pub inline extern gz-header-s-ptrraw/set-extra(s: intptr_t, extra: intptr_t): ()
+  c inline "((struct gz_header_s*)#1)->extra = (unsigned char*)#2"
 
-pub inline fun gz-header-scb/set-extra(^s: gz-header-scb<s::S>, extra: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra(extra))
+pub inline fun gz-header-sp/set-extra(s: gz-header-sp, extra: c-pointer<int8>): ()
+  s.ptr.set-extra(extra.ptr)
 
-pub inline fun gz-header-sc-wrapper/extra(^s: gz-header-sc): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/extra).c-own
+pub inline fun gz-header-sc/set-extra(^s: gz-header-sc, extra: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra(extra))
 
-pub inline fun gz-header-scb-wrapper/extra(^s: gz-header-scb<s::S>): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/extra).c-own
+pub inline fun gz-header-scb/set-extra(^s: gz-header-scb<s::S>, extra: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra(extra))
 
-pub inline fun gz-header-sc-wrapper/set-extra(^s: gz-header-sc, extra: owned-c<int8>): ()
-  with koka-ptr <- extra.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra(koka-ptr))
+pub inline extern gz-header-s-ptrraw/extra-len(s: intptr_t): int32
+  c inline "(unsigned int)(((struct gz_header_s*)#1)->extra_len)"
 
-pub inline fun gz-header-scb-wrapper/set-extra(^s: gz-header-scb<s::S>, extra: owned-c<int8>): ()
-  with koka-ptr <- extra.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra(koka-ptr))
-
-pub inline extern gz-header-s-ptr/extra-len(s: intptr_t): int32
-  c inline "(uInt)(((struct gz_header_s*)#1)->extra_len)"
+pub inline fun gz-header-sp/extra-len(s: gz-header-sp): int32
+  s.ptr.extra-len
 
 pub inline fun gz-header-sc/extra-len(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/extra-len)
+  s.with-ptr(gz-header-sp/extra-len)
 
 pub inline fun gz-header-scb/extra-len(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/extra-len)
+  s.with-ptr(gz-header-sp/extra-len)
 
-pub inline extern gz-header-s-ptr/set-extra-len(s: intptr_t, extra-len: int32): ()
-  c inline "((struct gz_header_s*)#1)->extra_len = (uInt)#2"
+pub inline extern gz-header-s-ptrraw/set-extra-len(s: intptr_t, extra-len: int32): ()
+  c inline "((struct gz_header_s*)#1)->extra_len = (unsigned int)#2"
+
+pub inline fun gz-header-sp/set-extra-len(s: gz-header-sp, extra-len: int32): ()
+  s.ptr.set-extra-len(extra-len)
 
 pub inline fun gz-header-sc/set-extra-len(^s: gz-header-sc, extra-len: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-len(extra-len))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-len(extra-len))
 
 pub inline fun gz-header-scb/set-extra-len(^s: gz-header-scb<s::S>, extra-len: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-len(extra-len))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-len(extra-len))
 
-pub inline fun gz-header-sc-wrapper/extra-len(^s: gz-header-sc): koka-uInt
-  s.with-ptr(gz-header-s-ptr/extra-len).int
+pub inline fun gz-header-sc-wrapper/extra-len(^s: gz-header-sc): koka-uint
+  s.with-ptr(gz-header-sp/extra-len).int
 
-pub inline fun gz-header-scb-wrapper/extra-len(^s: gz-header-scb<s::S>): koka-uInt
-  s.with-ptr(gz-header-s-ptr/extra-len).int
+pub inline fun gz-header-scb-wrapper/extra-len(^s: gz-header-scb<s::S>): koka-uint
+  s.with-ptr(gz-header-sp/extra-len).int
 
-pub inline fun gz-header-sc-wrapper/set-extra-len(^s: gz-header-sc, extra-len: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-len(extra-len.int32))
+pub inline fun gz-header-sc-wrapper/set-extra-len(^s: gz-header-sc, extra-len: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-len(extra-len.int32))
 
-pub inline fun gz-header-scb-wrapper/set-extra-len(^s: gz-header-scb<s::S>, extra-len: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-len(extra-len.int32))
+pub inline fun gz-header-scb-wrapper/set-extra-len(^s: gz-header-scb<s::S>, extra-len: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-len(extra-len.int32))
 
-pub inline extern gz-header-s-ptr/extra-max(s: intptr_t): int32
-  c inline "(uInt)(((struct gz_header_s*)#1)->extra_max)"
+pub inline extern gz-header-s-ptrraw/extra-max(s: intptr_t): int32
+  c inline "(unsigned int)(((struct gz_header_s*)#1)->extra_max)"
+
+pub inline fun gz-header-sp/extra-max(s: gz-header-sp): int32
+  s.ptr.extra-max
 
 pub inline fun gz-header-sc/extra-max(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/extra-max)
+  s.with-ptr(gz-header-sp/extra-max)
 
 pub inline fun gz-header-scb/extra-max(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/extra-max)
+  s.with-ptr(gz-header-sp/extra-max)
 
-pub inline extern gz-header-s-ptr/set-extra-max(s: intptr_t, extra-max: int32): ()
-  c inline "((struct gz_header_s*)#1)->extra_max = (uInt)#2"
+pub inline extern gz-header-s-ptrraw/set-extra-max(s: intptr_t, extra-max: int32): ()
+  c inline "((struct gz_header_s*)#1)->extra_max = (unsigned int)#2"
+
+pub inline fun gz-header-sp/set-extra-max(s: gz-header-sp, extra-max: int32): ()
+  s.ptr.set-extra-max(extra-max)
 
 pub inline fun gz-header-sc/set-extra-max(^s: gz-header-sc, extra-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-max(extra-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-max(extra-max))
 
 pub inline fun gz-header-scb/set-extra-max(^s: gz-header-scb<s::S>, extra-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-max(extra-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-max(extra-max))
 
-pub inline fun gz-header-sc-wrapper/extra-max(^s: gz-header-sc): koka-uInt
-  s.with-ptr(gz-header-s-ptr/extra-max).int
+pub inline fun gz-header-sc-wrapper/extra-max(^s: gz-header-sc): koka-uint
+  s.with-ptr(gz-header-sp/extra-max).int
 
-pub inline fun gz-header-scb-wrapper/extra-max(^s: gz-header-scb<s::S>): koka-uInt
-  s.with-ptr(gz-header-s-ptr/extra-max).int
+pub inline fun gz-header-scb-wrapper/extra-max(^s: gz-header-scb<s::S>): koka-uint
+  s.with-ptr(gz-header-sp/extra-max).int
 
-pub inline fun gz-header-sc-wrapper/set-extra-max(^s: gz-header-sc, extra-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-max(extra-max.int32))
+pub inline fun gz-header-sc-wrapper/set-extra-max(^s: gz-header-sc, extra-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-max(extra-max.int32))
 
-pub inline fun gz-header-scb-wrapper/set-extra-max(^s: gz-header-scb<s::S>, extra-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-extra-max(extra-max.int32))
+pub inline fun gz-header-scb-wrapper/set-extra-max(^s: gz-header-scb<s::S>, extra-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-extra-max(extra-max.int32))
 
-pub inline extern gz-header-s-ptr/name(s: intptr_t): intptr_t
+pub inline extern gz-header-s-ptrraw/name(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct gz_header_s*)#1)->name)"
 
-pub inline fun gz-header-sc/name(^s: gz-header-sc): intptr_t
-  s.with-ptr(gz-header-s-ptr/name)
+pub inline fun gz-header-sp/name(s: gz-header-sp): c-pointer<int8>
+  C-pointer(s.ptr.name)
 
-pub inline fun gz-header-scb/name(^s: gz-header-scb<s::S>): intptr_t
-  s.with-ptr(gz-header-s-ptr/name)
+pub inline fun gz-header-sc/name(^s: gz-header-sc): c-pointer<int8>
+  s.with-ptr(gz-header-sp/name)
 
-pub inline extern gz-header-s-ptr/set-name(s: intptr_t, name: intptr_t): ()
-  c inline "((struct gz_header_s*)#1)->name = (Bytef*)#2"
+pub inline fun gz-header-scb/name(^s: gz-header-scb<s::S>): c-pointer<int8>
+  s.with-ptr(gz-header-sp/name)
 
-pub inline fun gz-header-sc/set-name(^s: gz-header-sc, name: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name(name))
+pub inline extern gz-header-s-ptrraw/set-name(s: intptr_t, name: intptr_t): ()
+  c inline "((struct gz_header_s*)#1)->name = (unsigned char*)#2"
 
-pub inline fun gz-header-scb/set-name(^s: gz-header-scb<s::S>, name: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name(name))
+pub inline fun gz-header-sp/set-name(s: gz-header-sp, name: c-pointer<int8>): ()
+  s.ptr.set-name(name.ptr)
 
-pub inline fun gz-header-sc-wrapper/name(^s: gz-header-sc): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/name).c-own
+pub inline fun gz-header-sc/set-name(^s: gz-header-sc, name: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name(name))
 
-pub inline fun gz-header-scb-wrapper/name(^s: gz-header-scb<s::S>): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/name).c-own
+pub inline fun gz-header-scb/set-name(^s: gz-header-scb<s::S>, name: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name(name))
 
-pub inline fun gz-header-sc-wrapper/set-name(^s: gz-header-sc, name: owned-c<int8>): ()
-  with koka-ptr <- name.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name(koka-ptr))
+pub inline extern gz-header-s-ptrraw/name-max(s: intptr_t): int32
+  c inline "(unsigned int)(((struct gz_header_s*)#1)->name_max)"
 
-pub inline fun gz-header-scb-wrapper/set-name(^s: gz-header-scb<s::S>, name: owned-c<int8>): ()
-  with koka-ptr <- name.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name(koka-ptr))
-
-pub inline extern gz-header-s-ptr/name-max(s: intptr_t): int32
-  c inline "(uInt)(((struct gz_header_s*)#1)->name_max)"
+pub inline fun gz-header-sp/name-max(s: gz-header-sp): int32
+  s.ptr.name-max
 
 pub inline fun gz-header-sc/name-max(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/name-max)
+  s.with-ptr(gz-header-sp/name-max)
 
 pub inline fun gz-header-scb/name-max(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/name-max)
+  s.with-ptr(gz-header-sp/name-max)
 
-pub inline extern gz-header-s-ptr/set-name-max(s: intptr_t, name-max: int32): ()
-  c inline "((struct gz_header_s*)#1)->name_max = (uInt)#2"
+pub inline extern gz-header-s-ptrraw/set-name-max(s: intptr_t, name-max: int32): ()
+  c inline "((struct gz_header_s*)#1)->name_max = (unsigned int)#2"
+
+pub inline fun gz-header-sp/set-name-max(s: gz-header-sp, name-max: int32): ()
+  s.ptr.set-name-max(name-max)
 
 pub inline fun gz-header-sc/set-name-max(^s: gz-header-sc, name-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name-max(name-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name-max(name-max))
 
 pub inline fun gz-header-scb/set-name-max(^s: gz-header-scb<s::S>, name-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name-max(name-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name-max(name-max))
 
-pub inline fun gz-header-sc-wrapper/name-max(^s: gz-header-sc): koka-uInt
-  s.with-ptr(gz-header-s-ptr/name-max).int
+pub inline fun gz-header-sc-wrapper/name-max(^s: gz-header-sc): koka-uint
+  s.with-ptr(gz-header-sp/name-max).int
 
-pub inline fun gz-header-scb-wrapper/name-max(^s: gz-header-scb<s::S>): koka-uInt
-  s.with-ptr(gz-header-s-ptr/name-max).int
+pub inline fun gz-header-scb-wrapper/name-max(^s: gz-header-scb<s::S>): koka-uint
+  s.with-ptr(gz-header-sp/name-max).int
 
-pub inline fun gz-header-sc-wrapper/set-name-max(^s: gz-header-sc, name-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name-max(name-max.int32))
+pub inline fun gz-header-sc-wrapper/set-name-max(^s: gz-header-sc, name-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name-max(name-max.int32))
 
-pub inline fun gz-header-scb-wrapper/set-name-max(^s: gz-header-scb<s::S>, name-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-name-max(name-max.int32))
+pub inline fun gz-header-scb-wrapper/set-name-max(^s: gz-header-scb<s::S>, name-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-name-max(name-max.int32))
 
-pub inline extern gz-header-s-ptr/comment(s: intptr_t): intptr_t
+pub inline extern gz-header-s-ptrraw/comment(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct gz_header_s*)#1)->comment)"
 
-pub inline fun gz-header-sc/comment(^s: gz-header-sc): intptr_t
-  s.with-ptr(gz-header-s-ptr/comment)
+pub inline fun gz-header-sp/comment(s: gz-header-sp): c-pointer<int8>
+  C-pointer(s.ptr.comment)
 
-pub inline fun gz-header-scb/comment(^s: gz-header-scb<s::S>): intptr_t
-  s.with-ptr(gz-header-s-ptr/comment)
+pub inline fun gz-header-sc/comment(^s: gz-header-sc): c-pointer<int8>
+  s.with-ptr(gz-header-sp/comment)
 
-pub inline extern gz-header-s-ptr/set-comment(s: intptr_t, comment: intptr_t): ()
-  c inline "((struct gz_header_s*)#1)->comment = (Bytef*)#2"
+pub inline fun gz-header-scb/comment(^s: gz-header-scb<s::S>): c-pointer<int8>
+  s.with-ptr(gz-header-sp/comment)
 
-pub inline fun gz-header-sc/set-comment(^s: gz-header-sc, comment: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comment(comment))
+pub inline extern gz-header-s-ptrraw/set-comment(s: intptr_t, comment: intptr_t): ()
+  c inline "((struct gz_header_s*)#1)->comment = (unsigned char*)#2"
 
-pub inline fun gz-header-scb/set-comment(^s: gz-header-scb<s::S>, comment: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comment(comment))
+pub inline fun gz-header-sp/set-comment(s: gz-header-sp, comment: c-pointer<int8>): ()
+  s.ptr.set-comment(comment.ptr)
 
-pub inline fun gz-header-sc-wrapper/comment(^s: gz-header-sc): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/comment).c-own
+pub inline fun gz-header-sc/set-comment(^s: gz-header-sc, comment: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comment(comment))
 
-pub inline fun gz-header-scb-wrapper/comment(^s: gz-header-scb<s::S>): owned-c<int8>
-  s.with-ptr(gz-header-s-ptr/comment).c-own
+pub inline fun gz-header-scb/set-comment(^s: gz-header-scb<s::S>, comment: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comment(comment))
 
-pub inline fun gz-header-sc-wrapper/set-comment(^s: gz-header-sc, comment: owned-c<int8>): ()
-  with koka-ptr <- comment.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comment(koka-ptr))
+pub inline extern gz-header-s-ptrraw/comm-max(s: intptr_t): int32
+  c inline "(unsigned int)(((struct gz_header_s*)#1)->comm_max)"
 
-pub inline fun gz-header-scb-wrapper/set-comment(^s: gz-header-scb<s::S>, comment: owned-c<int8>): ()
-  with koka-ptr <- comment.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comment(koka-ptr))
-
-pub inline extern gz-header-s-ptr/comm-max(s: intptr_t): int32
-  c inline "(uInt)(((struct gz_header_s*)#1)->comm_max)"
+pub inline fun gz-header-sp/comm-max(s: gz-header-sp): int32
+  s.ptr.comm-max
 
 pub inline fun gz-header-sc/comm-max(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/comm-max)
+  s.with-ptr(gz-header-sp/comm-max)
 
 pub inline fun gz-header-scb/comm-max(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/comm-max)
+  s.with-ptr(gz-header-sp/comm-max)
 
-pub inline extern gz-header-s-ptr/set-comm-max(s: intptr_t, comm-max: int32): ()
-  c inline "((struct gz_header_s*)#1)->comm_max = (uInt)#2"
+pub inline extern gz-header-s-ptrraw/set-comm-max(s: intptr_t, comm-max: int32): ()
+  c inline "((struct gz_header_s*)#1)->comm_max = (unsigned int)#2"
+
+pub inline fun gz-header-sp/set-comm-max(s: gz-header-sp, comm-max: int32): ()
+  s.ptr.set-comm-max(comm-max)
 
 pub inline fun gz-header-sc/set-comm-max(^s: gz-header-sc, comm-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comm-max(comm-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comm-max(comm-max))
 
 pub inline fun gz-header-scb/set-comm-max(^s: gz-header-scb<s::S>, comm-max: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comm-max(comm-max))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comm-max(comm-max))
 
-pub inline fun gz-header-sc-wrapper/comm-max(^s: gz-header-sc): koka-uInt
-  s.with-ptr(gz-header-s-ptr/comm-max).int
+pub inline fun gz-header-sc-wrapper/comm-max(^s: gz-header-sc): koka-uint
+  s.with-ptr(gz-header-sp/comm-max).int
 
-pub inline fun gz-header-scb-wrapper/comm-max(^s: gz-header-scb<s::S>): koka-uInt
-  s.with-ptr(gz-header-s-ptr/comm-max).int
+pub inline fun gz-header-scb-wrapper/comm-max(^s: gz-header-scb<s::S>): koka-uint
+  s.with-ptr(gz-header-sp/comm-max).int
 
-pub inline fun gz-header-sc-wrapper/set-comm-max(^s: gz-header-sc, comm-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comm-max(comm-max.int32))
+pub inline fun gz-header-sc-wrapper/set-comm-max(^s: gz-header-sc, comm-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comm-max(comm-max.int32))
 
-pub inline fun gz-header-scb-wrapper/set-comm-max(^s: gz-header-scb<s::S>, comm-max: koka-uInt): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-comm-max(comm-max.int32))
+pub inline fun gz-header-scb-wrapper/set-comm-max(^s: gz-header-scb<s::S>, comm-max: koka-uint): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-comm-max(comm-max.int32))
 
-pub inline extern gz-header-s-ptr/hcrc(s: intptr_t): int32
+pub inline extern gz-header-s-ptrraw/hcrc(s: intptr_t): int32
   c inline "(int)(((struct gz_header_s*)#1)->hcrc)"
 
+pub inline fun gz-header-sp/hcrc(s: gz-header-sp): int32
+  s.ptr.hcrc
+
 pub inline fun gz-header-sc/hcrc(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/hcrc)
+  s.with-ptr(gz-header-sp/hcrc)
 
 pub inline fun gz-header-scb/hcrc(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/hcrc)
+  s.with-ptr(gz-header-sp/hcrc)
 
-pub inline extern gz-header-s-ptr/set-hcrc(s: intptr_t, hcrc: int32): ()
+pub inline extern gz-header-s-ptrraw/set-hcrc(s: intptr_t, hcrc: int32): ()
   c inline "((struct gz_header_s*)#1)->hcrc = (int)#2"
 
+pub inline fun gz-header-sp/set-hcrc(s: gz-header-sp, hcrc: int32): ()
+  s.ptr.set-hcrc(hcrc)
+
 pub inline fun gz-header-sc/set-hcrc(^s: gz-header-sc, hcrc: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-hcrc(hcrc))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-hcrc(hcrc))
 
 pub inline fun gz-header-scb/set-hcrc(^s: gz-header-scb<s::S>, hcrc: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-hcrc(hcrc))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-hcrc(hcrc))
 
 pub inline fun gz-header-sc-wrapper/hcrc(^s: gz-header-sc): int
-  s.with-ptr(gz-header-s-ptr/hcrc).int
+  s.with-ptr(gz-header-sp/hcrc).int
 
 pub inline fun gz-header-scb-wrapper/hcrc(^s: gz-header-scb<s::S>): int
-  s.with-ptr(gz-header-s-ptr/hcrc).int
+  s.with-ptr(gz-header-sp/hcrc).int
 
 pub inline fun gz-header-sc-wrapper/set-hcrc(^s: gz-header-sc, hcrc: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-hcrc(hcrc.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-hcrc(hcrc.int32))
 
 pub inline fun gz-header-scb-wrapper/set-hcrc(^s: gz-header-scb<s::S>, hcrc: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-hcrc(hcrc.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-hcrc(hcrc.int32))
 
-pub inline extern gz-header-s-ptr/done(s: intptr_t): int32
+pub inline extern gz-header-s-ptrraw/done(s: intptr_t): int32
   c inline "(int)(((struct gz_header_s*)#1)->done)"
 
+pub inline fun gz-header-sp/done(s: gz-header-sp): int32
+  s.ptr.done
+
 pub inline fun gz-header-sc/done(^s: gz-header-sc): int32
-  s.with-ptr(gz-header-s-ptr/done)
+  s.with-ptr(gz-header-sp/done)
 
 pub inline fun gz-header-scb/done(^s: gz-header-scb<s::S>): int32
-  s.with-ptr(gz-header-s-ptr/done)
+  s.with-ptr(gz-header-sp/done)
 
-pub inline extern gz-header-s-ptr/set-done(s: intptr_t, done: int32): ()
+pub inline extern gz-header-s-ptrraw/set-done(s: intptr_t, done: int32): ()
   c inline "((struct gz_header_s*)#1)->done = (int)#2"
 
+pub inline fun gz-header-sp/set-done(s: gz-header-sp, done: int32): ()
+  s.ptr.set-done(done)
+
 pub inline fun gz-header-sc/set-done(^s: gz-header-sc, done: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-done(done))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-done(done))
 
 pub inline fun gz-header-scb/set-done(^s: gz-header-scb<s::S>, done: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-done(done))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-done(done))
 
 pub inline fun gz-header-sc-wrapper/done(^s: gz-header-sc): int
-  s.with-ptr(gz-header-s-ptr/done).int
+  s.with-ptr(gz-header-sp/done).int
 
 pub inline fun gz-header-scb-wrapper/done(^s: gz-header-scb<s::S>): int
-  s.with-ptr(gz-header-s-ptr/done).int
+  s.with-ptr(gz-header-sp/done).int
 
 pub inline fun gz-header-sc-wrapper/set-done(^s: gz-header-sc, done: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-done(done.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-done(done.int32))
 
 pub inline fun gz-header-scb-wrapper/set-done(^s: gz-header-scb<s::S>, done: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-s-ptr/set-done(done.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gz-header-sp/set-done(done.int32))
 
-pub fun gz-header-s/to-koka(s: gz-header-sc): gz-header-s
-  Gz-header-s(s.gz-header-sc/text.int, s.gz-header-sc/time.int, s.gz-header-sc/xflags.int, s.gz-header-sc/os.int, s.gz-header-sc/extra.c-own, s.gz-header-sc/extra-len.int, s.gz-header-sc/extra-max.int, s.gz-header-sc/name.c-own, s.gz-header-sc/name-max.int, s.gz-header-sc/comment.c-own, s.gz-header-sc/comm-max.int, s.gz-header-sc/hcrc.int, s.gz-header-sc/done.int)
-
-alias z-streamp = intptr_t
-alias koka-z_streamp = owned-c<z-stream-s-c>
+alias z-streamp = c-pointer<z-stream-s-c>
 alias z-stream = z-stream-s-c
-alias koka-z_stream = z-stream-s
-alias gz-headerp = intptr_t
-alias koka-gz_headerp = owned-c<gz-header-s-c>
+alias koka-z-stream = z-stream-s
+alias gz-headerp = c-pointer<gz-header-s-c>
 alias gz-header = gz-header-s-c
-alias koka-gz_header = gz-header-s
-alias in-func = intptr_t
-alias in-funcfn = ((intptr_t, intptr_t) -> int32)
-alias koka-in_funcfn = ((owned-c<()>, owned-c<intptr_t>) -> int)
-alias out-func = intptr_t
-alias out-funcfn = ((intptr_t, intptr_t, int32) -> int32)
-alias koka-out_funcfn = ((owned-c<()>, owned-c<int8>, int) -> int)
+alias koka-gz-header = gz-header-s
+alias in-func = c-pointer<intptr_t>
+alias in-funcfn = ((c-pointer<()>, c-pointer<c-pointer<int8>>) -> int32)
+alias koka-in-funcfn = ((c-pointer<()>, c-pointer<c-pointer<int8>>) -> int)
+alias out-func = c-pointer<intptr_t>
+alias out-funcfn = ((c-pointer<()>, c-pointer<int8>, int32) -> int32)
+alias koka-out-funcfn = ((c-pointer<()>, c-pointer<int8>, int) -> int)
 alias ulongf = int64
 pub value struct gzfile-s
   have: int
-  next: owned-c<int8>
-  pos: koka-off_t
+  next: c-pointer<int8>
+  pos: koka-off-t
 
 pub type gzfile-s-c
+pub alias gzfile-sp = c-pointer<gzfile-s-c>
 pub alias gzfile-sc = owned-c<gzfile-s-c>
 pub alias gzfile-scb<s::S> = borrowed-c<s,gzfile-s-c>
-pub alias gzfile-sca = owned-c<c-array<gzfile-s>>
+pub alias gzfile-sca = owned-c<c-array<gzfile-s-c>>
 
 pub extern gzfile-s/size-of(c: c-null<gzfile-s-c>): int32
   c inline "sizeof(struct gzFile_s)"
@@ -1538,187 +1472,107 @@ pub fun gzfile-sc-array(n: int): gzfile-sca
 pub fun gzfile-sc-array-calloc(n: int): gzfile-sca
   malloc-c(n.int32, ?size-of=gzfile-s/size-of)
 
-pub inline extern gzfile-s-ptr/have(s: intptr_t): int32
+pub inline extern gzfile-s-ptrraw/have(s: intptr_t): int32
   c inline "(unsigned int)(((struct gzFile_s*)#1)->have)"
 
+pub inline fun gzfile-sp/have(s: gzfile-sp): int32
+  s.ptr.have
+
 pub inline fun gzfile-sc/have(^s: gzfile-sc): int32
-  s.with-ptr(gzfile-s-ptr/have)
+  s.with-ptr(gzfile-sp/have)
 
 pub inline fun gzfile-scb/have(^s: gzfile-scb<s::S>): int32
-  s.with-ptr(gzfile-s-ptr/have)
+  s.with-ptr(gzfile-sp/have)
 
-pub inline extern gzfile-s-ptr/set-have(s: intptr_t, have: int32): ()
+pub inline extern gzfile-s-ptrraw/set-have(s: intptr_t, have: int32): ()
   c inline "((struct gzFile_s*)#1)->have = (unsigned int)#2"
 
+pub inline fun gzfile-sp/set-have(s: gzfile-sp, have: int32): ()
+  s.ptr.set-have(have)
+
 pub inline fun gzfile-sc/set-have(^s: gzfile-sc, have: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-have(have))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-have(have))
 
 pub inline fun gzfile-scb/set-have(^s: gzfile-scb<s::S>, have: int32): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-have(have))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-have(have))
 
 pub inline fun gzfile-sc-wrapper/have(^s: gzfile-sc): int
-  s.with-ptr(gzfile-s-ptr/have).int
+  s.with-ptr(gzfile-sp/have).int
 
 pub inline fun gzfile-scb-wrapper/have(^s: gzfile-scb<s::S>): int
-  s.with-ptr(gzfile-s-ptr/have).int
+  s.with-ptr(gzfile-sp/have).int
 
 pub inline fun gzfile-sc-wrapper/set-have(^s: gzfile-sc, have: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-have(have.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-have(have.int32))
 
 pub inline fun gzfile-scb-wrapper/set-have(^s: gzfile-scb<s::S>, have: int): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-have(have.int32))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-have(have.int32))
 
-pub inline extern gzfile-s-ptr/next(s: intptr_t): intptr_t
+pub inline extern gzfile-s-ptrraw/next(s: intptr_t): intptr_t
   c inline "(intptr_t)(((struct gzFile_s*)#1)->next)"
 
-pub inline fun gzfile-sc/next(^s: gzfile-sc): intptr_t
-  s.with-ptr(gzfile-s-ptr/next)
+pub inline fun gzfile-sp/next(s: gzfile-sp): c-pointer<int8>
+  C-pointer(s.ptr.next)
 
-pub inline fun gzfile-scb/next(^s: gzfile-scb<s::S>): intptr_t
-  s.with-ptr(gzfile-s-ptr/next)
+pub inline fun gzfile-sc/next(^s: gzfile-sc): c-pointer<int8>
+  s.with-ptr(gzfile-sp/next)
 
-pub inline extern gzfile-s-ptr/set-next(s: intptr_t, next: intptr_t): ()
+pub inline fun gzfile-scb/next(^s: gzfile-scb<s::S>): c-pointer<int8>
+  s.with-ptr(gzfile-sp/next)
+
+pub inline extern gzfile-s-ptrraw/set-next(s: intptr_t, next: intptr_t): ()
   c inline "((struct gzFile_s*)#1)->next = (unsigned char*)#2"
 
-pub inline fun gzfile-sc/set-next(^s: gzfile-sc, next: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-next(next))
+pub inline fun gzfile-sp/set-next(s: gzfile-sp, next: c-pointer<int8>): ()
+  s.ptr.set-next(next.ptr)
 
-pub inline fun gzfile-scb/set-next(^s: gzfile-scb<s::S>, next: intptr_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-next(next))
+pub inline fun gzfile-sc/set-next(^s: gzfile-sc, next: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-next(next))
 
-pub inline fun gzfile-sc-wrapper/next(^s: gzfile-sc): owned-c<int8>
-  s.with-ptr(gzfile-s-ptr/next).c-own
+pub inline fun gzfile-scb/set-next(^s: gzfile-scb<s::S>, next: c-pointer<int8>): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-next(next))
 
-pub inline fun gzfile-scb-wrapper/next(^s: gzfile-scb<s::S>): owned-c<int8>
-  s.with-ptr(gzfile-s-ptr/next).c-own
+pub inline extern gzfile-s-ptrraw/pos(s: intptr_t): int64
+  c inline "(long long)(((struct gzFile_s*)#1)->pos)"
 
-pub inline fun gzfile-sc-wrapper/set-next(^s: gzfile-sc, next: owned-c<int8>): ()
-  with koka-ptr <- next.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-next(koka-ptr))
-
-pub inline fun gzfile-scb-wrapper/set-next(^s: gzfile-scb<s::S>, next: owned-c<int8>): ()
-  with koka-ptr <- next.with-ptr
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-next(koka-ptr))
-
-pub inline extern gzfile-s-ptr/pos(s: intptr_t): int64
-  c inline "(off_t)(((struct gzFile_s*)#1)->pos)"
+pub inline fun gzfile-sp/pos(s: gzfile-sp): int64
+  s.ptr.pos
 
 pub inline fun gzfile-sc/pos(^s: gzfile-sc): int64
-  s.with-ptr(gzfile-s-ptr/pos)
+  s.with-ptr(gzfile-sp/pos)
 
 pub inline fun gzfile-scb/pos(^s: gzfile-scb<s::S>): int64
-  s.with-ptr(gzfile-s-ptr/pos)
+  s.with-ptr(gzfile-sp/pos)
 
-pub inline extern gzfile-s-ptr/set-pos(s: intptr_t, pos: int64): ()
-  c inline "((struct gzFile_s*)#1)->pos = (off_t)#2"
+pub inline extern gzfile-s-ptrraw/set-pos(s: intptr_t, pos: int64): ()
+  c inline "((struct gzFile_s*)#1)->pos = (long long)#2"
+
+pub inline fun gzfile-sp/set-pos(s: gzfile-sp, pos: int64): ()
+  s.ptr.set-pos(pos)
 
 pub inline fun gzfile-sc/set-pos(^s: gzfile-sc, pos: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-pos(pos))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-pos(pos))
 
 pub inline fun gzfile-scb/set-pos(^s: gzfile-scb<s::S>, pos: int64): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-pos(pos))
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-pos(pos))
 
-pub inline fun gzfile-sc-wrapper/pos(^s: gzfile-sc): koka-off_t
-  s.with-ptr(gzfile-s-ptr/pos).int
+pub inline fun gzfile-sc-wrapper/pos(^s: gzfile-sc): koka-off-t
+  s.with-ptr(gzfile-sp/pos).int
 
-pub inline fun gzfile-scb-wrapper/pos(^s: gzfile-scb<s::S>): koka-off_t
-  s.with-ptr(gzfile-s-ptr/pos).int
+pub inline fun gzfile-scb-wrapper/pos(^s: gzfile-scb<s::S>): koka-off-t
+  s.with-ptr(gzfile-sp/pos).int
 
-pub inline fun gzfile-sc-wrapper/set-pos(^s: gzfile-sc, pos: koka-off_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-pos(pos.int64))
+pub inline fun gzfile-sc-wrapper/set-pos(^s: gzfile-sc, pos: koka-off-t): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-pos(pos.int64))
 
-pub inline fun gzfile-scb-wrapper/set-pos(^s: gzfile-scb<s::S>, pos: koka-off_t): ()
-  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-s-ptr/set-pos(pos.int64))
-
-pub fun gzfile-s/to-koka(s: gzfile-sc): gzfile-s
-  Gzfile-s(s.gzfile-sc/have.int, s.gzfile-sc/next.c-own, s.gzfile-sc/pos.int)
+pub inline fun gzfile-scb-wrapper/set-pos(^s: gzfile-scb<s::S>, pos: koka-off-t): ()
+  s.with-ptr(fn(kk-internal-ptr) kk-internal-ptr.gzfile-sp/set-pos(pos.int64))
 
 alias off-t = int64
-alias koka-off_t = int
-alias gzfile = intptr_t
-alias koka-gzFile = owned-c<gzfile-s-c>
-alias voidp = intptr_t
-alias koka-voidp = owned-c<()>
+alias koka-off-t = int
+alias gzfile = c-pointer<gzfile-s-c>
+alias voidp = c-pointer<()>
 alias z-size-t = ssize_t
-alias voidpc = intptr_t
-alias koka-voidpc = owned-c<()>
+alias voidpc = c-pointer<()>
 alias z-crc-t = int32
-alias koka-z_crc_t = int
-pub val kmax_mem_level: int = 9
-
-pub val kmax_wbits: int = 15
-
-pub val kzlib_version: string = "1.2.11"
-
-pub val kzlib_vernum: int = 4784
-
-pub val kzlib_ver_major: int = 1
-
-pub val kzlib_ver_minor: int = 2
-
-pub val kzlib_ver_revision: int = 11
-
-pub val kzlib_ver_subrevision: int = 0
-
-pub val kz_no_flush: int = 0
-
-pub val kz_partial_flush: int = 1
-
-pub val kz_sync_flush: int = 2
-
-pub val kz_full_flush: int = 3
-
-pub val kz_finish: int = 4
-
-pub val kz_block: int = 5
-
-pub val kz_trees: int = 6
-
-pub val kz_ok: int = 0
-
-pub val kz_stream_end: int = 1
-
-pub val kz_need_dict: int = 2
-
-pub val kz_errno: int = -1
-
-pub val kz_stream_error: int = -2
-
-pub val kz_data_error: int = -3
-
-pub val kz_mem_error: int = -4
-
-pub val kz_buf_error: int = -5
-
-pub val kz_version_error: int = -6
-
-pub val kz_no_compression: int = 0
-
-pub val kz_best_speed: int = 1
-
-pub val kz_best_compression: int = 9
-
-pub val kz_default_compression: int = -1
-
-pub val kz_filtered: int = 1
-
-pub val kz_huffman_only: int = 2
-
-pub val kz_rle: int = 3
-
-pub val kz_fixed: int = 4
-
-pub val kz_default_strategy: int = 0
-
-pub val kz_binary: int = 0
-
-pub val kz_text: int = 1
-
-pub val kz_ascii: int = 1
-
-pub val kz_unknown: int = 2
-
-pub val kz_deflated: int = 8
-
-pub val kz_null: int = 0
-
+alias koka-z-crc-t = int
