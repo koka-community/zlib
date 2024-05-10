@@ -15,7 +15,7 @@ dev_dependencies:
 ffigen:
   name: zlib
   ffi-native:
-    assetId: "c { syslib=\"z\" }\nextern import\n  c header-file \"zconf.h\"\nextern import\n  c header-file \"zlib.h\""
+    assetId: "c { vcpkg=\"zlib\" }"
   description: Bindings to `zlib.h`.
   output: 'zlib/generated.kk'
   headers:
